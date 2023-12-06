@@ -55,7 +55,7 @@ def run(model: str, num_hands: int,
   """
 
   # Start capturing video input from the camera
-  cap = cv2.VideoCapture(camera_id)
+  cap = cv2.VideoCapture(CAP_V4L2)
   cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
   cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
