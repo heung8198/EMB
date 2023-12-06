@@ -35,7 +35,8 @@ START_TIME = time.time()
 
 def run(model: str, num_hands: int,
         min_hand_detection_confidence: float,
-        min_hand_presence_confidence: float, min_tracking_confidence: float,
+        min_hand_presence_confidence: float, 
+        min_tracking_confidence: float,
         camera_id: int, width: int, height: int) -> None:
   """Continuously run inference on images acquired from the camera.
 
