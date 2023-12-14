@@ -34,27 +34,89 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
     return count;
 }
 
-// Other necessary functions (open, close, etc.) would be similar to your segment driver
+//driver open
+static int driver_open(struct inode* inode, struct file* file) {
+    printk(KERN_INFO "StepperMotorDriver: Device opened\n");
+    return 0;
+}
+
+//driver close
+static int driver_close(struct inode* inode, struct file* file) {
+    printk(KERN_INFO "StepperMotorDriver: Device closed\n");
+    return 0;
+}
+
+// 파일 작업 구조체 정의
+static struct file_operations fops = {
+    .owner = THIS_MODULE,
+    .open = driver_open,
+    .release = driver_close,
+    .write = driver_write
+};
 
 static int __init ModuleInit(void) {
     printk("Stepper Motor Module loaded\n");
 
-    // Device and GPIO initialization logic similar to your segment driver
+    // Device and GPIO initialization logic
+    if (alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0) {
+        printk(KERN_ALERT "StepperMotorDriver: Couldn't allocate device number\n");
+        return -1;
+    }
+	
+    if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
+        printk(KERN_ALERT "StepperMotorDriver: Couldn't create device class\n");
+        unregister_chrdev_region(my_device_nr, 1);
+        return -1;
+    }
+
+    if (device_create(my_class, NULL, my_device_nr, NULL, DRIVER_NAME) == NULL) {
+        printk(KERN_ALERT "StepperMotorDriver: Couldn't create device file\n");
+        class_destroy(my_class);
+        unregister_chrdev_region(my_device_nr, 1);
+        return -1;
+    }
+
+    // Initialize device file
+    cdev_init(&my_device, &fops);
+
+    if (cdev_add(&my_device, my_device_nr, 1) == -1) {
+        printk(KERN_ALERT "StepperMotorDriver: Registering of device to kernel failed\n");
+        device_destroy(my_class, my_device_nr);
+        class_destroy(my_class);
+        unregister_chrdev_region(my_device_nr, 1);
+        return -1;
+    }
 
     // Additional GPIO initialization specific to stepper motor
     for (int i = 0; i < 4; i++) {
         if (gpio_request(gpio_pins[i], "rpi-gpio-stepper")) {
-            printk("Cannot allocate GPIO %d\n", gpio_pins[i]);
-            // Handle error: free allocated GPIOs and return
+            printk(KERN_ALERT "StepperMotorDriver: Cannot allocate GPIO %d\n", gpio_pins[i]);
+            // Cleanup in case of error
+            for (int j = 0; j < i; j++) {
+                gpio_free(gpio_pins[j]);
+            }
+            cdev_del(&my_device);
+            device_destroy(my_class, my_device_nr);
+            class_destroy(my_class);
+            unregister_chrdev_region(my_device_nr, 1);
+            return -1;
         }
+
         if (gpio_direction_output(gpio_pins[i], 0)) {
-            printk("Cannot set GPIO %d to output\n", gpio_pins[i]);
-            // Handle error: free allocated GPIOs and return
+            printk(KERN_ALERT "StepperMotorDriver: Cannot set GPIO %d to output\n", gpio_pins[i]);
+            // Cleanup in case of error
+            for (int j = 0; j <= i; j++) {
+                gpio_free(gpio_pins[j]);
+            }
+            cdev_del(&my_device);
+            device_destroy(my_class, my_device_nr);
+            class_destroy(my_class);
+            unregister_chrdev_region(my_device_nr, 1);
+            return -1;
         }
     }
 
     return 0;
-    // Error handling would follow the pattern from your segment driver
 }
 
 static void __exit ModuleExit(void) {
@@ -64,7 +126,11 @@ static void __exit ModuleExit(void) {
         gpio_free(gpio_pins[i]);
     }
 
-    // Other cleanup logic similar to your segment driver
+    cdev_del(&my_device);
+    device_destroy(my_class, my_device_nr);
+    class_destroy(my_class);
+    unregister_chrdev_region(my_device_nr, 1);
+
     printk("Stepper Motor Module unloaded\n");
 }
 
