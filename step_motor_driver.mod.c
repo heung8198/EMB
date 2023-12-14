@@ -32,11 +32,13 @@ __used __section("__versions") = {
 	{ 0xb1ad28e0, "__gnu_mcount_nc" },
 	{ 0x92997ed8, "_printk" },
 	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
+	{ 0x8f678b07, "__stack_chk_guard" },
 	{ 0xae353d77, "arm_copy_from_user" },
 	{ 0x1171558e, "gpio_to_desc" },
 	{ 0x7419044a, "gpiod_set_raw_value" },
 	{ 0xf9a482f9, "msleep" },
 	{ 0x5f754e5a, "memset" },
+	{ 0x3ea1b6e4, "__stack_chk_fail" },
 	{ 0xe3ec2f2b, "alloc_chrdev_region" },
 	{ 0xa91f4045, "__class_create" },
 	{ 0x6091b333, "unregister_chrdev_region" },
@@ -55,4 +57,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "D75556C95BFB09A8E8AA2CB");
+MODULE_INFO(srcversion, "D71DFC84AB033A27B543650");

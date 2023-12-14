@@ -32,9 +32,9 @@ static int gpio_pins[] = {17, 27, 22, 5}; // Example GPIO pin numbers
 
 static ssize_t driver_write(struct file* File, const char* user_buffer, size_t count, loff_t* offs) {
 	int to_copy, not_copied, delta, mode;
-	to_copy = min(count, sizeof(step_index));
+	to_copy = min(count, sizeof(mode));
 	
-	not_copied = copy_from_user(&step_index, user_buffer, to_copy);
+	not_copied = copy_from_user(&mode, user_buffer, to_copy);
 	if (mode == FORWARD) {
         for (int step = 0; step < STEPS_PER_REVOLUTION; step++) {
             step_index = (step_index + 1) % 4;
