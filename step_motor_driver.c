@@ -100,7 +100,7 @@ static int __init ModuleInit(void) {
 	int i1, j1;
     for (i1 = 0; i1 < 4; i1++) {
         if (gpio_request(gpio_pins[i1], "rpi-gpio-stepper")) {
-            printk(KERN_ALERT "StepperMotorDriver: Cannot allocate GPIO %d\n", gpio_pins[i]);
+            printk(KERN_ALERT "StepperMotorDriver: Cannot allocate GPIO %d\n", gpio_pins[i1]);
             // Cleanup in case of error
             for (j1 = 0; j1 < i1; j1++) {
                 gpio_free(gpio_pins[j1]);
