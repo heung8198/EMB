@@ -1,76 +1,131 @@
 #include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/fs.h>
-#include <linux/cdev.h>
-#include <linux/uaccess.h>
 #include <linux/gpio.h>
+#include <linux/interrupt.h>
 #include <linux/delay.h>
+#include <linux/cdev.h>
+#include <linux/fs.h>
+#include <linux/uaccess.h>
+#include <linux/ktime.h>
 
-/* Meta Information */
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Your Name");
-MODULE_DESCRIPTION("Ultrasonic Sensor Driver");
+#define TRIGGER_PIN 17   // Replace with your GPIO pin number
+#define ECHO_PIN 18     // Replace with your GPIO pin number
+#define DEVICE_NAME "hcsr04"
 
-/* Variables for device and device class */
-static dev_t ultrasonic_dev;
-static struct class *ultrasonic_class;
-static struct device *ultrasonic_device;
-static struct cdev ultrasonic_cdev;
+static dev_t dev_number;
+static struct cdev hcsr04_cdev;
+static struct class *cls;
 
-#define DRIVER_NAME "ultrasonic_sensor"
-#define TRIGGER_PIN 17
-#define ECHO_PIN 18
-
+static ktime_t echo_start;
+static ktime_t echo_end;
 static int distance;
 
-static ssize_t distance_read(struct file *file, char *buffer, size_t length, loff_t *offset) {
-    int len = 0;
-    char dist_str[10];
-    long start_time;  // 선언 위치 변경
-    unsigned long delta_time;  // 선언 위치 변경
+static irqreturn_t echo_handler(int irq, void *dev_id) {
+    if (gpio_get_value(ECHO_PIN)) {
+        echo_start = ktime_get();
+    } else {
+        echo_end = ktime_get();
+        distance = (int) ktime_to_us(ktime_sub(echo_end, echo_start)) / 58; // Convert time to distance
+    }
+    return IRQ_HANDLED;
+}
 
-    // Trigger the sensor, Trigger Pin에 10us의 펄스 신호를 입력해서 거리 측정 시작
+static ssize_t hcsr04_read(struct file *file, char __user *userbuf, size_t count, loff_t *ppos) {
+    char buf[20];
+    int len = 0;
+
+    // Trigger the HC-SR04 sensor
     gpio_set_value(TRIGGER_PIN, 1);
     udelay(10);
     gpio_set_value(TRIGGER_PIN, 0);
 
-    // Wait for the echo signal, Echo Pin을 걸린 시간동안 펄스 신호 입력하여 거리 계산
-    while (gpio_get_value(ECHO_PIN) == 0)
-        ;
-    start_time = jiffies;
+    // Wait for measurement to be available
+    msleep(60);
 
-    while (gpio_get_value(ECHO_PIN) == 1) {
-        if (time_after(jiffies, start_time + msecs_to_jiffies(20))) {
-            // Timeout, break to avoid infinite loop
-            printk(KERN_ALERT "Ultrasonic sensor read timeout\n");
-            break;
-        }
-    }
+    // Read the distance
+    len = snprintf(buf, sizeof(buf), "%d\n", distance);
+    if (len > count) 
+        return -EFAULT;
 
-    // Calculate distance based on the time difference
-    delta_time = jiffies_to_msecs(jiffies - start_time);
-    distance = delta_time * 343 / 2000; // Speed of sound is 343 m/s
-
-    len = snprintf(dist_str, sizeof(dist_str), "%d\n", distance);
-
-    if (copy_to_user(buffer, dist_str, len))
+    if (copy_to_user(userbuf, buf, len))
         return -EFAULT;
 
     return len;
 }
 
-// ... [file_operations 및 ultrasonic_init 함수는 변경하지 않음] ...
+static struct file_operations fops = {
+    .owner = THIS_MODULE,
+    .read = hcsr04_read,
+};
 
-static void __exit ultrasonic_exit(void) {
-    cdev_del(&ultrasonic_cdev);
-    device_destroy(ultrasonic_class, ultrasonic_dev);
-    class_destroy(ultrasonic_class);
-    unregister_chrdev_region(ultrasonic_dev, 1);
-    gpio_free(TRIGGER_PIN);
-    gpio_free(ECHO_PIN);
-    printk(KERN_INFO "Ultrasonic Sensor Driver removed\n");
+static int __init hcsr04_init(void) {
+    int ret;
+
+    // Allocate character device
+    if (alloc_chrdev_region(&dev_number, 0, 1, DEVICE_NAME) < 0) {
+        return -1;
+    }
+
+    // Create class
+    cls = class_create(THIS_MODULE, DEVICE_NAME);
+    if (IS_ERR(cls)) {
+        unregister_chrdev_region(dev_number, 1);
+        return -1;
+    }
+
+    // Create device
+    device_create(cls, NULL, dev_number, NULL, DEVICE_NAME);
+
+    // Initialize char device
+    cdev_init(&hcsr04_cdev, &fops);
+    hcsr04_cdev.owner = THIS_MODULE;
+    if (cdev_add(&hcsr04_cdev, dev_number, 1) < 0) {
+        device_destroy(cls, dev_number);
+        class_destroy(cls);
+        unregister_chrdev_region(dev_number, 1);
+        return -1;
+    }
+
+    // Initialize GPIO
+    gpio_request(TRIGGER_PIN, "Trigger");
+    gpio_direction_output(TRIGGER_PIN, 0);
+    gpio_request(ECHO_PIN, "Echo");
+    gpio_direction_input(ECHO_PIN);
+
+    // Set up interrupt handler
+    if (request_irq(gpio_to_irq(ECHO_PIN), echo_handler, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING, DEVICE_NAME, NULL)) {
+        cdev_del(&hcsr04_cdev);
+        device_destroy(cls, dev_number);
+        class_destroy(cls);
+        unregister_chrdev_region(dev_number, 1);
+        gpio_free(ECHO_PIN);
+        gpio_free(TRIGGER_PIN);
+        return -1;
+    }
+
+    printk(KERN_INFO "%s: Device initialized\n", DEVICE_NAME);
+    return 0;
 }
 
-module_init(ultrasonic_init);
-module_exit(ultrasonic_exit);
+static void __exit hcsr04_exit(void) {
+    // Free interrupt
+    free_irq(gpio_to_irq(ECHO_PIN), NULL);
+
+    // Remove char device
+    cdev_del(&hcsr04_cdev);
+    device_destroy(cls, dev_number);
+    class_destroy(cls);
+    unregister_chrdev_region(dev_number, 1);
+
+    // Free GPIO
+    gpio_free(ECHO_PIN);
+    gpio_free(TRIGGER_PIN);
+
+    printk(KERN_INFO "%s: Device removed\n", DEVICE_NAME);
+}
+
+module_init(hcsr04_init);
+module_exit(hcsr04_exit);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("HC-SR04 Driver");
