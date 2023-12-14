@@ -4,6 +4,8 @@
 #include <linux/cdev.h>
 #include <linux/uaccess.h>
 #include <linux/gpio.h>
+#include <linux/delay.h> // msleep을 사용하기 위한 헤더 파일
+
 
 /* Meta Information */
 MODULE_LICENSE("GPL");
@@ -17,6 +19,10 @@ static struct cdev my_device;
 
 #define DRIVER_NAME "my_stepper"
 #define DRIVER_CLASS "MyModuleClass_Stepper"
+#define BACKWARD 0
+#define FORWARD 1
+#define STEPS_PER_REVOLUTION 100 //180 
+
 
 static int step_sequence[] = {0b0001, 0b0010, 0b0100, 0b1000}; // Basic step sequence
 static int step_index = 0; // Current step index
@@ -25,22 +31,36 @@ static int step_index = 0; // Current step index
 static int gpio_pins[] = {17, 27, 22, 5}; // Example GPIO pin numbers
 
 static ssize_t driver_write(struct file* File, const char* user_buffer, size_t count, loff_t* offs) {
-	int to_copy, not_copied, delta;
+	int to_copy, not_copied, delta, mode;
 	to_copy = min(count, sizeof(step_index));
 	
 	not_copied = copy_from_user(&step_index, user_buffer, to_copy);
-	
-    // Handle stepper motor control logic here
-    // For example, a simple step forward logic
-    step_index = (step_index + 1) % 4;
-	int i =0;
-    while (i<4) {
-        gpio_set_value(gpio_pins[i], (step_sequence[step_index] & (1 << i)) != 0);
-	    i++;
+	if (mode == FORWARD) {
+        for (int step = 0; step < STEPS_PER_REVOLUTION; step++) {
+            step_index = (step_index + 1) % 4;
+            for (int i = 0; i < 4; i++) {
+                gpio_set_value(gpio_pins[i], (step_sequence[step_index] & (1 << i)) != 0);
+            }
+            // 추가적인 딜레이를 넣을 수 있음
+			msleep(10); // 10ms 딜레이
+        }
+    } else if (mode == BACKWARD) {
+        for (int step = 0; step < STEPS_PER_REVOLUTION; step++) {
+            step_index = (step_index - 1 + 4) % 4;
+            for (int i = 0; i < 4; i++) {
+                gpio_set_value(gpio_pins[i], (step_sequence[step_index] & (1 << i)) != 0);
+            }
+            // 추가적인 딜레이를 넣을 수 있음
+			msleep(10); // 10ms 딜레이
+        }
     }
 
-	delta = to_copy - not_copied;
+    delta = to_copy - not_copied;
     return delta;
+
+
+
+	
 }
 
 //driver open
