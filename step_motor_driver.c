@@ -115,7 +115,7 @@ static int __init ModuleInit(void) {
         if (gpio_direction_output(gpio_pins[i1], 0)) {
             printk(KERN_ALERT "StepperMotorDriver: Cannot set GPIO %d to output\n", gpio_pins[i1]);
             // Cleanup in case of error
-            for (int j1 = 0; j1 <= i1; j1++) {
+            for (j1 = 0; j1 <= i1; j1++) {
                 gpio_free(gpio_pins[j1]);
             }
             cdev_del(&my_device);
