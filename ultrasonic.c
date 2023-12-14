@@ -2,7 +2,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
-
+// d
 int main() {
     char buffer[10];
     int dev = open("/dev/ultrasonic_sensor", O_RDWR);
