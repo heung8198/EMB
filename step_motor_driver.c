@@ -19,7 +19,7 @@ static struct cdev my_device;
 
 #define DRIVER_NAME "my_stepper"
 #define DRIVER_CLASS "MyModuleClass_Stepper"
-#define BACKWARD 0
+#define BACKWARD 2
 #define FORWARD 1
 #define STEPS_PER_REVOLUTION 100 //180 
 
