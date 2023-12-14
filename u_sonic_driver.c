@@ -1,131 +1,159 @@
 #include <linux/module.h>
-#include <linux/gpio.h>
-#include <linux/interrupt.h>
-#include <linux/delay.h>
-#include <linux/cdev.h>
+#include <linux/init.h>
 #include <linux/fs.h>
+#include <linux/cdev.h>
 #include <linux/uaccess.h>
+#include <linux/gpio.h>
+#include <linux/kernel.h>
+#include <linux/delay.h>
 #include <linux/ktime.h>
 
-#define TRIGGER_PIN 17   // Replace with your GPIO pin number
-#define ECHO_PIN 18     // Replace with your GPIO pin number
-#define DEVICE_NAME "hcsr04"
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("Simple HC-SR04 Driver");
 
-static dev_t dev_number;
-static struct cdev hcsr04_cdev;
-static struct class *cls;
+static dev_t my_device_nr;
+static struct class* my_class;
+static struct cdev my_device;
 
-static ktime_t echo_start;
-static ktime_t echo_end;
-static int distance;
+#define DRIVER_NAME "hcsr04"
+#define DRIVER_CLASS "HCSR04ModuleClass"
 
-static irqreturn_t echo_handler(int irq, void *dev_id) {
-    if (gpio_get_value(ECHO_PIN)) {
-        echo_start = ktime_get();
-    } else {
-        echo_end = ktime_get();
-        distance = (int) ktime_to_us(ktime_sub(echo_end, echo_start)) / 58; // Convert time to distance
+#define TRIG_PIN 23 // 예시 트리거 핀 번호
+#define ECHO_PIN 24 // 예시 에코 핀 번호
+
+// 초음파 센서 거리 측정 로직
+static int measure_distance(void) {
+    ktime_t start_time, end_time;
+    s64 time_diff;
+    int distance;
+
+    // 트리거 신호 보내기
+    gpio_set_value(TRIG_PIN, 1);
+    udelay(10); // 10us 지연
+    gpio_set_value(TRIG_PIN, 0);
+
+    // 에코 신호 수신 대기
+    while (gpio_get_value(ECHO_PIN) == 0) {
+        start_time = ktime_get();
     }
-    return IRQ_HANDLED;
+
+    // 에코 신호 종료 대기
+    while (gpio_get_value(ECHO_PIN) == 1) {
+        end_time = ktime_get();
+    }
+
+    // 시간 차이 계산
+    time_diff = ktime_to_us(ktime_sub(end_time, start_time));
+    distance = (int)time_diff / 58; // 거리 계산 (cm 단위)
+
+    return distance;
 }
 
-static ssize_t hcsr04_read(struct file *file, char __user *userbuf, size_t count, loff_t *ppos) {
-    char buf[20];
-    int len = 0;
+static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, loff_t* offs) {
+    char buffer[16];
+    int distance = measure_distance(); // 거리 측정
+    int len = snprintf(buffer, sizeof(buffer), "%d cm\n", distance);
 
-    // Trigger the HC-SR04 sensor
-    gpio_set_value(TRIGGER_PIN, 1);
-    udelay(10);
-    gpio_set_value(TRIGGER_PIN, 0);
+    return simple_read_from_buffer(user_buffer, count, offs, buffer, len);
+}
 
-    // Wait for measurement to be available
-    msleep(60);
+//driver open
+static int driver_open(struct inode* inode, struct file* file) {
+    printk(KERN_INFO "UltraSonicDriver: Device opened\n");
+    return 0;
+}
 
-    // Read the distance
-    len = snprintf(buf, sizeof(buf), "%d\n", distance);
-    if (len > count) 
-        return -EFAULT;
-
-    if (copy_to_user(userbuf, buf, len))
-        return -EFAULT;
-
-    return len;
+//driver close
+static int driver_close(struct inode* inode, struct file* file) {
+    printk(KERN_INFO "UltraSonicDriver: Device closed\n");
+    return 0;
 }
 
 static struct file_operations fops = {
     .owner = THIS_MODULE,
-    .read = hcsr04_read,
+    .open = driver_open,
+    .release = driver_close,
+    .read = driver_read,
 };
 
-static int __init hcsr04_init(void) {
-    int ret;
+static int __init ModuleInit(void) {
+    printk(KERN_INFO "HC-SR04 Module init\n");
 
-    // Allocate character device
-    if (alloc_chrdev_region(&dev_number, 0, 1, DEVICE_NAME) < 0) {
+    // 장치 번호 할당
+    if (alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0) {
+        printk(KERN_ALERT "Could not allocate device number\n");
         return -1;
     }
 
-    // Create class
-    cls = class_create(THIS_MODULE, DEVICE_NAME);
-    if (IS_ERR(cls)) {
-        unregister_chrdev_region(dev_number, 1);
+    // 장치 클래스 생성
+    if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
+        printk(KERN_ALERT "Could not create device class\n");
+        unregister_chrdev_region(my_device_nr, 1);
         return -1;
     }
 
-    // Create device
-    device_create(cls, NULL, dev_number, NULL, DEVICE_NAME);
-
-    // Initialize char device
-    cdev_init(&hcsr04_cdev, &fops);
-    hcsr04_cdev.owner = THIS_MODULE;
-    if (cdev_add(&hcsr04_cdev, dev_number, 1) < 0) {
-        device_destroy(cls, dev_number);
-        class_destroy(cls);
-        unregister_chrdev_region(dev_number, 1);
+    // 장치 파일 생성
+    if (device_create(my_class, NULL, my_device_nr, NULL, DRIVER_NAME) == NULL) {
+        printk(KERN_ALERT "Could not create device\n");
+        class_destroy(my_class);
+        unregister_chrdev_region(my_device_nr, 1);
         return -1;
     }
 
-    // Initialize GPIO
-    gpio_request(TRIGGER_PIN, "Trigger");
-    gpio_direction_output(TRIGGER_PIN, 0);
-    gpio_request(ECHO_PIN, "Echo");
-    gpio_direction_input(ECHO_PIN);
+    // 장치 파일 초기화
+    cdev_init(&my_device, &fops);
+    if (cdev_add(&my_device, my_device_nr, 1) == -1) {
+        printk(KERN_ALERT "Registering of device to kernel failed\n");
+        device_destroy(my_class, my_device_nr);
+        class_destroy(my_class);
+        unregister_chrdev_region(my_device_nr, 1);
+        return -1;
+    }
 
-    // Set up interrupt handler
-    if (request_irq(gpio_to_irq(ECHO_PIN), echo_handler, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING, DEVICE_NAME, NULL)) {
-        cdev_del(&hcsr04_cdev);
-        device_destroy(cls, dev_number);
-        class_destroy(cls);
-        unregister_chrdev_region(dev_number, 1);
+    // GPIO 초기화
+    if (gpio_request(TRIG_PIN, "rpi-gpio-trig") || gpio_request(ECHO_PIN, "rpi-gpio-echo")) {
+        printk(KERN_ALERT "Cannot allocate GPIO\n");
+        cdev_del(&my_device);
+        device_destroy(my_class, my_device_nr);
+        class_destroy(my_class);
+        unregister_chrdev_region(my_device_nr, 1);
+        return -1;
+    }
+
+    if (gpio_direction_output(TRIG_PIN, 0) || gpio_direction_input(ECHO_PIN)) {
+        printk(KERN_ALERT "Cannot set GPIO direction\n");
+        gpio_free(TRIG_PIN);
         gpio_free(ECHO_PIN);
-        gpio_free(TRIGGER_PIN);
+        cdev_del(&my_device);
+        device_destroy(my_class, my_device_nr);
+        class_destroy(my_class);
+        unregister_chrdev_region(my_device_nr, 1);
         return -1;
     }
 
-    printk(KERN_INFO "%s: Device initialized\n", DEVICE_NAME);
+    printk(KERN_INFO "HC-SR04 Driver loaded successfully\n");
     return 0;
 }
 
-static void __exit hcsr04_exit(void) {
-    // Free interrupt
-    free_irq(gpio_to_irq(ECHO_PIN), NULL);
+static void __exit ModuleExit(void) {
+    printk(KERN_INFO "HC-SR04 Module exit\n");
 
-    // Remove char device
-    cdev_del(&hcsr04_cdev);
-    device_destroy(cls, dev_number);
-    class_destroy(cls);
-    unregister_chrdev_region(dev_number, 1);
-
-    // Free GPIO
+    // GPIO 정리
+    gpio_free(TRIG_PIN);
     gpio_free(ECHO_PIN);
-    gpio_free(TRIGGER_PIN);
 
-    printk(KERN_INFO "%s: Device removed\n", DEVICE_NAME);
+    // cdev 제거 및 장치 파일 정리
+    cdev_del(&my_device);
+    device_destroy(my_class, my_device_nr);
+    class_destroy(my_class);
+
+    // 장치 번호 해제
+    unregister_chrdev_region(my_device_nr, 1);
+
+    printk(KERN_INFO "HC-SR04 Driver unloaded successfully\n");
 }
 
-module_init(hcsr04_init);
-module_exit(hcsr04_exit);
+module_init(ModuleInit);
+module_exit(ModuleExit);
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Your Name");
-MODULE_DESCRIPTION("HC-SR04 Driver");
