@@ -97,12 +97,13 @@ static int __init ModuleInit(void) {
     }
 
     // Additional GPIO initialization specific to stepper motor
-    for (int i = 0; i < 4; i++) {
-        if (gpio_request(gpio_pins[i], "rpi-gpio-stepper")) {
+	int i1, j1;
+    for (i1 = 0; i1 < 4; i1++) {
+        if (gpio_request(gpio_pins[i1], "rpi-gpio-stepper")) {
             printk(KERN_ALERT "StepperMotorDriver: Cannot allocate GPIO %d\n", gpio_pins[i]);
             // Cleanup in case of error
-            for (int j = 0; j < i; j++) {
-                gpio_free(gpio_pins[j]);
+            for (j1 = 0; j1 < i1; j1++) {
+                gpio_free(gpio_pins[j1]);
             }
             cdev_del(&my_device);
             device_destroy(my_class, my_device_nr);
@@ -111,11 +112,11 @@ static int __init ModuleInit(void) {
             return -1;
         }
 
-        if (gpio_direction_output(gpio_pins[i], 0)) {
-            printk(KERN_ALERT "StepperMotorDriver: Cannot set GPIO %d to output\n", gpio_pins[i]);
+        if (gpio_direction_output(gpio_pins[i1], 0)) {
+            printk(KERN_ALERT "StepperMotorDriver: Cannot set GPIO %d to output\n", gpio_pins[i1]);
             // Cleanup in case of error
-            for (int j = 0; j <= i; j++) {
-                gpio_free(gpio_pins[j]);
+            for (int j1 = 0; j1 <= i1; j1++) {
+                gpio_free(gpio_pins[j1]);
             }
             cdev_del(&my_device);
             device_destroy(my_class, my_device_nr);
@@ -130,9 +131,10 @@ static int __init ModuleInit(void) {
 
 static void __exit ModuleExit(void) {
     // GPIO cleanup logic
-    for (int i = 0; i < 4; i++) {
-        gpio_set_value(gpio_pins[i], 0);
-        gpio_free(gpio_pins[i]);
+	int i2;
+    for (i2 = 0; i2 < 4; i2++) {
+        gpio_set_value(gpio_pins[i2], 0);
+        gpio_free(gpio_pins[i2]);
     }
 
     cdev_del(&my_device);
