@@ -1,21 +1,17 @@
-obj-m += step_motor_driver.o serbo_motor_driver.o
-KDIR = ~/working/Raspbian/kernel
+obj-m += step_motor_driver.o
+KDIR = ~/working/kernel
 
-RESULT1 = serbo_motor
-RESULT2 = step_motor
+RESULT = step_motor
 
-SRC1 = $(RESULT1).c
-SRC2 = $(RESULT2).c
+SRC = $(RESULT).c
 
 
-CCC = arm-linux-gnueabihf-gcc
+CCC = aarch64-linux-gnu-gcc
 
 all:
 	make -C $(KDIR) M=$(PWD) modules
-	$(CCC) -o $(RESULT2) $(SRC2)
-	$(CCC) -o $(RESULT1) $(SRC1)
+	$(CCC) -o $(RESULT) $(SRC)
 
 clean:
 	make -C $(KDIR) M=$(PWD) clean
-	rm -rf $(RESULT2)
-	rm -rf $(RESULT1)
+	rm -rf $(RESULT)
