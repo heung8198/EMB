@@ -4,35 +4,42 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 
-#define DEVICE "/dev/my_stepper" // 드라이버가 생성한 장치 파일 경로
+#define FORWARD 1
+#define BACKWARD 2
 
 int main() {
-    int fd;
-    unsigned int steps;
+    int file_desc, ret;
+    int mode;
 
-    // 장치 파일 열기
-    fd = open(DEVICE, O_RDWR);
-    if (fd < 0) {
-        perror("Failed to open the device");
-        return -1; // 대신 -1을 반환
+    // 디바이스 파일 열기
+    file_desc = open("/dev/my_stepper", O_RDWR);
+    if (file_desc < 0) {
+        printf("Error: Could not open the device file\n");
+        return -1;
     }
 
-    printf("Enter the number of steps to rotate the motor: ");
-    scanf("%u", &steps);
+    // 사용자에게 모드 입력 받기
+    printf("Enter mode (1 for forward, 2 for backward): ");
+    scanf("%d", &mode);
 
-    // 드라이버에 스텝 수 쓰기
-    if (write(fd, &steps, sizeof(steps)) < 0) {
-        perror("Failed to write to the device");
-        close(fd); // 에러 발생 시 파일 닫기
-        return -1; // 대신 -1을 반환
+    if (mode != FORWARD && mode != BACKWARD) {
+        printf("Invalid mode. Please enter 1 or 2.\n");
+        close(file_desc);
+        return -1;
     }
 
-    printf("Motor rotated %u steps.\n", steps);
+    // 커널 모듈에 모드 전송
+    ret = write(file_desc, &mode, sizeof(mode));
+    if (ret < 0) {
+        printf("Error: Could not write to the device file\n");
+        close(file_desc);
+        return -1;
+    }
 
-    // 장치 파일 닫기
-    close(fd);
+    printf("Stepper motor control command sent successfully\n");
 
+    // 디바이스 파일 닫기
+    close(file_desc);
     return 0;
 }
-
 
