@@ -15,11 +15,11 @@ MODULE_DESCRIPTION("Ultrasonic Sensor Driver");
 static dev_t ultrasonic_dev;
 static struct class *ultrasonic_class;
 static struct device *ultrasonic_device;
+static struct cdev ultrasonic_cdev;
 
 #define DRIVER_NAME "ultrasonic_sensor"
 #define TRIGGER_PIN 17
 #define ECHO_PIN 18
-
 
 static int distance;
 
@@ -64,7 +64,6 @@ static struct file_operations ultrasonic_fops = {
 
 static int __init ultrasonic_init(void) {
     int result;
-
     printk("Hello, kernel!\n");
 
     // Create device class, 형태 상이
@@ -83,12 +82,13 @@ static int __init ultrasonic_init(void) {
 
     // Initialize character device
     cdev_init(&ultrasonic_cdev, &ultrasonic_fops);
+    ultrasonic_cdev.owner = THIS_MODULE;
 
     // Add character device to the system
     result = cdev_add(&ultrasonic_cdev, ultrasonic_dev, 1);
     if (result < 0) {
         printk(KERN_ALERT "Failed to add character device\n");
-        goto cleanup_device;
+        goto cleanup_chrdev;
     }
 
     // Request GPIO pins, trigger>echo 순으로 GPIO init
@@ -112,7 +112,7 @@ static int __init ultrasonic_init(void) {
     result = alloc_chrdev_region(&ultrasonic_dev, 0, 1, DRIVER_NAME);
     if (result < 0) {
         printk(KERN_ALERT "Failed to allocate device number\n");
-        goto cleanup_gpio;
+        return result;
     }
 
     printk(KERN_INFO "Ultrasonic Sensor Driver initialized\n");
