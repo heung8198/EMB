@@ -26,15 +26,17 @@ static int gpio_pins[] = {17, 27, 22, 5}; // Example GPIO pin numbers
 
 static ssize_t driver_write(struct file* File, const char* user_buffer, size_t count, loff_t* offs) {
 	int to_copy, not_copied, delta;
-	to_copy = min(count, sizeof(value));
+	to_copy = min(count, sizeof(step_index));
 	
 	not_copied = copy_from_user(&step_index, user_buffer, to_copy);
 	
     // Handle stepper motor control logic here
     // For example, a simple step forward logic
     step_index = (step_index + 1) % 4;
-    for (int i = 0; i < 4; i++) {
+	int i =0;
+    while (i<4) {
         gpio_set_value(gpio_pins[i], (step_sequence[step_index] & (1 << i)) != 0);
+	    i++;
     }
 
 	delta = to_copy - not_copied;
