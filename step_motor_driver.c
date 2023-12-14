@@ -21,7 +21,7 @@ static struct cdev my_device;
 #define DRIVER_CLASS "MyModuleClass_Stepper"
 #define BACKWARD 2
 #define FORWARD 1
-#define STEPS_PER_REVOLUTION 100 //180 
+#define STEPS_PER_REVOLUTION 1000 //180 
 
 
 static int step_sequence[] = {0b0001, 0b0010, 0b0100, 0b1000}; // Basic step sequence
