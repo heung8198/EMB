@@ -1,31 +1,31 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <string.h>
-// d
+#include <stdlib.h>
+
+#define DEVICE_FILE "/dev/hcsr04" // 드라이버에 의해 생성된 장치 파일
+
 int main() {
-    char buffer[10];
-    int dev = open("/dev/ultrasonic_sensor", O_RDWR);
+    int fd;
+    char distance[10];
 
-    if (dev == -1) {
-        perror("Error opening device file");
-        return -1;
+    // 장치 파일 열기
+    fd = open(DEVICE_FILE, O_RDONLY);
+    if (fd < 0) {
+        perror("Failed to open the device");
+        return errno;
     }
 
-    while (1) {
-        // 읽기 연산을 통해 초음파 센서의 거리 값을 읽어옴
-        if (read(dev, buffer, sizeof(buffer)) < 0) {
-            perror("Error reading from device");
-            break;
-        }
-
-        // 읽어온 거리 값을 출력
-        printf("Distance: %s", buffer);
-
-        // 1초 대기
-        sleep(1);
+    // 거리 읽기
+    if (read(fd, distance, sizeof(distance)) < 0) {
+        perror("Failed to read the distance");
+        return errno;
     }
 
-    close(dev);
+    printf("Distance: %s cm\n", distance);
+
+    // 장치 파일 닫기
+    close(fd);
+
     return 0;
 }
