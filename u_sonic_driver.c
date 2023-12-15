@@ -29,7 +29,7 @@ static int measure_distance(void) {
     int distance;
     // 트리거 핀 초기화
     gpio_set_value(TRIG_PIN, 0);
-    udelay(2); / 2us 지연 추가
+    udelay(2); // 2us 지연 추가
         
     // 트리거 신호 보내기
     gpio_set_value(TRIG_PIN, 1);

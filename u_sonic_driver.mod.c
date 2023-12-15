@@ -33,11 +33,12 @@ __used __section("__versions") = {
 	{ 0x92997ed8, "_printk" },
 	{ 0xefd6cf06, "__aeabi_unwind_cpp_pr0" },
 	{ 0x8f678b07, "__stack_chk_guard" },
+	{ 0x8e865d3c, "arm_delay_ops" },
 	{ 0x1171558e, "gpio_to_desc" },
 	{ 0x7419044a, "gpiod_set_raw_value" },
-	{ 0x8e865d3c, "arm_delay_ops" },
 	{ 0xb43f9365, "ktime_get" },
 	{ 0x2e4c28f8, "gpiod_get_raw_value" },
+	{ 0xf9a482f9, "msleep" },
 	{ 0xc358aaf8, "snprintf" },
 	{ 0x528c709d, "simple_read_from_buffer" },
 	{ 0x3ea1b6e4, "__stack_chk_fail" },
@@ -60,4 +61,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "6C359856C9F2ECCD3ACB513");
+MODULE_INFO(srcversion, "8A9422F7E212E962F807074");
