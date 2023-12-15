@@ -27,7 +27,10 @@ static int measure_distance(void) {
     ktime_t start_time, end_time;
     s64 time_diff;
     int distance;
-
+    // 트리거 핀 초기화
+    gpio_set_value(TRIG_PIN, 0);
+    udelay(2); / 2us 지연 추가
+        
     // 트리거 신호 보내기
     gpio_set_value(TRIG_PIN, 1);
     udelay(10); // 10us 지연
@@ -47,6 +50,8 @@ static int measure_distance(void) {
     time_diff = ktime_to_us(ktime_sub(end_time, start_time));
     distance = (int)time_diff / 58; // 거리 계산 (cm 단위)
 
+    // 추가 지연을 위한 잠시 대기
+    msleep(60);
     return distance;
 }
 
@@ -69,7 +74,7 @@ static int driver_close(struct inode* inode, struct file* file) {
     printk(KERN_INFO "UltraSonicDriver: Device closed\n");
     return 0;
 }
-
+// 파일 작업 구조체 정의
 static struct file_operations fops = {
     .owner = THIS_MODULE,
     .open = driver_open,
