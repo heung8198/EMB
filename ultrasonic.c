@@ -24,6 +24,9 @@ int main() {
             break; // 종료
         }
         
+        // 버퍼 초기화
+        memset(buffer, 0, sizeof(buffer)); 
+        
         // 디바이스 파일에서 거리 읽기
         ssize_t bytes_read = read(fd, buffer, sizeof(buffer));
         if (bytes_read == -1) {
