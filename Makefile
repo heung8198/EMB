@@ -12,7 +12,7 @@ CCC = arm-linux-gnueabihf-gcc
 all:
 	make -C $(KDIR) M=$(PWD) modules
 	$(CCC) -o $(RESULT) $(SRC)
-	$(CCC) -o $(RESULT) $(SRC1)
+	$(CCC) -o $(RESULT1) $(SRC1)
 
 clean:
 	make -C $(KDIR) M=$(PWD) clean
