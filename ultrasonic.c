@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
 #define DEVICE_PATH "/dev/hcsr04" // 사용할 디바이스 파일 경로
 
