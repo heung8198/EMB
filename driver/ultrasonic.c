@@ -26,7 +26,7 @@ int main() {
         }
         
         // 버퍼 초기화
-        memset(buffer, 0, sizeof(buffer)); 
+        // memset(buffer, 0, sizeof(buffer)); 
 
          // 표준 입력 버퍼 비우기
         while ((c = getchar()) != '\n' && c != EOF);
