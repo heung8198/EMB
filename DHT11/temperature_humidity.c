@@ -28,8 +28,8 @@ int main() {
 	temp = buffer[2];
 	humidity = buffer[0];
 
-	printf("temperature is %c\n", temp);
-	printf("humidity is %c\n", humidity);
+	printf("temperature is %c*C\n", temp);
+	printf("humidity is %c%\n", humidity);
 	close(dev);
 	return 0;
 }
