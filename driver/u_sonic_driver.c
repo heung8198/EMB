@@ -54,7 +54,7 @@ static int measure_distance(void) {
 }
 
 static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, loff_t* offs) {
-    char buffer[16];
+    char buffer[20];
     int distance = measure_distance(); // 거리 측정
     int len = snprintf(buffer, sizeof(buffer), "%d cm\n", distance);
 
