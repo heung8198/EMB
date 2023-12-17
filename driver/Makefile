@@ -1,21 +1,20 @@
-<<<<<<< HEAD
-obj-m += temperature_humidity_driver.o
-KDIR = ~/working/kernel
-=======
-obj-m += temperature_humidity_driver.c
+obj-m += step_motor_driver.o u_sonic_driver.o
 KDIR = ~/working/Raspbian/kernel
->>>>>>> ea456ca9d6c321abee680b40599a263d407d8ec2
 
-RESULT1 = temperature_humidity
+RESULT = step_motor
+RESULT1 = ultrasonic
 
+SRC = $(RESULT).c
 SRC1 = $(RESULT1).c
 
 CCC = arm-linux-gnueabihf-gcc
 
 all:
 	make -C $(KDIR) M=$(PWD) modules
+	$(CCC) -o $(RESULT) $(SRC)
 	$(CCC) -o $(RESULT1) $(SRC1)
 
 clean:
 	make -C $(KDIR) M=$(PWD) clean
+	rm -rf $(RESULT)
 	rm -rf $(RESULT1)

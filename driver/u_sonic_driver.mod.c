@@ -38,7 +38,6 @@ __used __section("__versions") = {
 	{ 0x7419044a, "gpiod_set_raw_value" },
 	{ 0xb43f9365, "ktime_get" },
 	{ 0x2e4c28f8, "gpiod_get_raw_value" },
-	{ 0xf9a482f9, "msleep" },
 	{ 0xc358aaf8, "snprintf" },
 	{ 0x528c709d, "simple_read_from_buffer" },
 	{ 0x3ea1b6e4, "__stack_chk_fail" },
@@ -61,4 +60,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "8A9422F7E212E962F807074");
+MODULE_INFO(srcversion, "679899B3C2109CF027EB056");

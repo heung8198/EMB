@@ -1,1 +1,0 @@
-cmd_/home/jjuser/working/term_project/EMB/modules.order := {   echo /home/jjuser/working/term_project/EMB/step_motor_driver.ko;   echo /home/jjuser/working/term_project/EMB/u_sonic_driver.ko; :; } | awk '!x[$$0]++' - > /home/jjuser/working/term_project/EMB/modules.order
