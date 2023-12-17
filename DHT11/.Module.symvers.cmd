@@ -1,1 +1,0 @@
-cmd_/home/heung/working/EMB/DHT11/Module.symvers := sed 's/\.ko$$/\.o/' /home/heung/working/EMB/DHT11/modules.order | scripts/mod/modpost -m -a  -o /home/heung/working/EMB/DHT11/Module.symvers -e -i Module.symvers   -T -

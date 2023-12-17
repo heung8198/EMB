@@ -5,8 +5,7 @@
 #include <linux/uaccess.h>
 #include <linux/gpio.h>
 #include <linux/kernel.h>
-
-//Button gpio dirver gpio22 up , gpio27 down
+#include <linux/delay.h>
 
 
 /* Meta Information */
@@ -117,17 +116,17 @@ static int __init ModuleInit(void) {
 	}
 
 	/*GPIO 4 init*/
-	if (gpio_request(, "rpi-gpio-4")) {
+	if (gpio_request(4, "rpi-gpio-4")) {
 		printk("Can not allocate GPIO 4\n");
 		goto AddError;
 	}
-
+	
 	/*Set GPIO 4 direction*/
 	if (gpio_direction_input(DHT11_DATA_PIN)) {
-		printk("Can not set GPIO 22 to input!\n");
+		printk("Can not set GPIO 4 to input!\n");
 		goto Gpio4Error;
 	}
-
+	
 	return 0;
 Gpio4Error:
 	gpio_free(DHT11_DATA_PIN);

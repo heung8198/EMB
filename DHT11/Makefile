@@ -1,7 +1,7 @@
-obj-m += temperature_humidity_driver.c
+obj-m += temperature_humidity_driver.o
 KDIR = ~/working/kernel
 
-RESULT1 = temperature_humidity_driver
+RESULT1 = temperature_humidity
 
 SRC1 = $(RESULT1).c
 
