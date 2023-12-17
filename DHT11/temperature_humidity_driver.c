@@ -55,6 +55,12 @@ static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, l
         }
     }
 
+    uint8_t checksum = sensor_data[0] + sensor_data[1] + sensor_data[2] + sensor_data[3];
+    if (checksum != sensor_data[4]) {
+        printk("DHT-11 - Checksum error\n");
+        return -EIO; // I/O 에러 반환
+    }
+
     
     // 복사할 바이트 수를 가져옵니다 (button_state의 크기를 초과할 수 없음)
     to_copy = min(count, sizeof(sensor_data));
