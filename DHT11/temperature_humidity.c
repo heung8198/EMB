@@ -28,7 +28,7 @@ int main() {
 	temp = buffer[2];
 	humidity = buffer[0];
 
-	printf("temperature is %d", temp);
-	printf("humidity is %d", humidity);
+	printf("temperature is %d\n", temp);
+	printf("humidity is %d\n", humidity);
 
 }
