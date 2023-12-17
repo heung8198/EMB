@@ -1,16 +1,13 @@
-<<<<<<< HEAD
+
 obj-m += temperature_humidity_driver.o
+
 KDIR = ~/working/kernel
-=======
-obj-m += temperature_humidity_driver.c
-KDIR = ~/working/Raspbian/kernel
->>>>>>> ea456ca9d6c321abee680b40599a263d407d8ec2
 
 RESULT1 = temperature_humidity
 
 SRC1 = $(RESULT1).c
 
-CCC = arm-linux-gnueabihf-gcc
+CCC = aarch64 linux-gnu-gcc
 
 all:
 	make -C $(KDIR) M=$(PWD) modules

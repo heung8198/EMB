@@ -1,1 +1,0 @@
-cmd_/home/jjuser/working/term_project/EMB/DHT11/modules.order := {   echo /home/jjuser/working/term_project/EMB/DHT11/temperature_humidity_driver.c; :; } | awk '!x[$$0]++' - > /home/jjuser/working/term_project/EMB/DHT11/modules.order
