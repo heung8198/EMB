@@ -29,7 +29,7 @@ static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, l
     char sensor_data[5]; // 두 버튼의 상태를 저장하기 위해
     int i, j;
     uint8_t bit = 0;
-
+    uint8_t checksum=0;
 
     //send to dht-11 start signal
     gpio_direction_output(DHT11_DATA_PIN, 1);
@@ -55,7 +55,7 @@ static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, l
         }
     }
 
-    uint8_t checksum = sensor_data[0] + sensor_data[1] + sensor_data[2] + sensor_data[3];
+    checksum = sensor_data[0] + sensor_data[1] + sensor_data[2] + sensor_data[3];
     if (checksum != sensor_data[4]) {
         printk("DHT-11 - Checksum error\n");
         return -EIO; // I/O 에러 반환
