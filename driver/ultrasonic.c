@@ -20,17 +20,18 @@ int main() {
     // 사용자로부터 거리 측정 명령 받기
     printf("Press Enter to measure distance, q to quit...\n");
     while (1) {
+        printf("Distance: ");
+        fflush(stdout);  // 버퍼를 즉시 비우도록 강제
+
+        // 사용자 입력을 기다림
         char c = getchar();
         if (c == 'q' || c == 'Q') {
             break; // 종료
         }
         
         // 버퍼 초기화
-        // memset(buffer, 0, sizeof(buffer)); 
+        memset(buffer, 0, sizeof(buffer)); 
 
-         // 표준 입력 버퍼 비우기
-        while ((c = getchar()) != '\n' && c != EOF);
-        
         // 디바이스 파일에서 거리 읽기
         ssize_t bytes_read = read(fd, buffer, sizeof(buffer));
         if (bytes_read == -1) {
@@ -39,7 +40,7 @@ int main() {
         }
 
         // 읽은 데이터 출력
-        printf("Distance: %s", buffer);
+        printf("%s\n", buffer);
     }
 
     // 디바이스 파일 닫기
@@ -47,3 +48,4 @@ int main() {
 
     return 0;
 }
+

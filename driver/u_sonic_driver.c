@@ -23,35 +23,45 @@ static struct cdev my_device;
 #define ECHO_PIN 24 // 예시 에코 핀 번호
 
 // 초음파 센서 거리 측정 로직
+
 static int measure_distance(void) {
     ktime_t start_time, end_time;
     s64 time_diff;
     int distance;
-    // 트리거 핀 초기화
+
+    // 트리거 핀을 LOW 상태로 2us 이상 유지하여 센서를 초기화
     gpio_set_value(TRIG_PIN, 0);
-    udelay(2); // 2us 지연 추가
-        
-    // 트리거 신호 보내기
+    udelay(5);
+
+    // 트리거 신호 보내기 (HIGH 상태로 10us 동안 유지)
     gpio_set_value(TRIG_PIN, 1);
-    udelay(10); // 10us 지연
+    udelay(10);
     gpio_set_value(TRIG_PIN, 0);
 
-    // 에코 신호 수신 대기
+    // 에코 신호가 HIGH가 될 때까지 기다림
     while (gpio_get_value(ECHO_PIN) == 0) {
         start_time = ktime_get();
     }
 
-    // 에코 신호 종료 대기
+    // 에코 신호가 LOW가 될 때까지 기다림
     while (gpio_get_value(ECHO_PIN) == 1) {
         end_time = ktime_get();
     }
 
-    // 시간 차이 계산
+    // 시간 차이 계산 (에코 신호의 지속 시간)
     time_diff = ktime_to_us(ktime_sub(end_time, start_time));
-    distance = (int)time_diff / 58; // 거리 계산 (cm 단위)
 
+    // 거리 계산 (cm 단위)
+    distance = (int)time_diff / 58;
+
+    // 에코 핀이 LOW 상태로 돌아올 때까지 기다림
+    while (gpio_get_value(ECHO_PIN) == 1);
+
+    // 거리 반환
     return distance;
 }
+
+
 
 static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, loff_t* offs) {
     char buffer[20];
