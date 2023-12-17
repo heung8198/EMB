@@ -28,10 +28,10 @@ static int measure_distance(void) {
     ktime_t start_time, end_time;
     s64 time_diff;
     int distance;
-
-    // 트리거 핀을 LOW 상태로 2us 이상 유지하여 센서를 초기화
+    
+    // 트리거 핀을 LOW 상태로 유지하여 센서를 초기화
     gpio_set_value(TRIG_PIN, 0);
-    udelay(5);
+    udelay(5); // 5us의 딜레이
 
     // 트리거 신호 보내기 (HIGH 상태로 10us 동안 유지)
     gpio_set_value(TRIG_PIN, 1);
@@ -54,14 +54,12 @@ static int measure_distance(void) {
     // 거리 계산 (cm 단위)
     distance = (int)time_diff / 58;
 
-    // 에코 핀이 LOW 상태로 돌아올 때까지 기다림
-    while (gpio_get_value(ECHO_PIN) == 1);
+    // 센서가 다음 측정을 준비할 수 있도록 충분한 시간을 기다림
+    udelay(200); // 200us의 딜레이
 
     // 거리 반환
     return distance;
 }
-
-
 
 static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, loff_t* offs) {
     char buffer[20];
