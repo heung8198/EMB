@@ -45,7 +45,7 @@ static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, l
         for (j = 0; j < 8; j++) {  // 각 바이트당 8비트
             bit = 0;
             while (gpio_get_value(DHT11_DATA_PIN) == 0);  // low 상태 대기
-            udelay(30);  // 데이터 비트의 길이 측정
+            udelay(40);  // 데이터 비트의 길이 측정
             if (gpio_get_value(DHT11_DATA_PIN) == 1) {
                 bit = 1;
                 while (gpio_get_value(DHT11_DATA_PIN) == 1);  // high 상태 대기
