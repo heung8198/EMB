@@ -30,5 +30,6 @@ int main() {
 
 	printf("temperature is %c\n", temp);
 	printf("humidity is %c\n", humidity);
-
+	close(dev);
+	return 0;
 }
