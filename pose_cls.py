@@ -22,16 +22,6 @@ pose_classifier_interpreter.allocate_tensors()
 cap = cv2.VideoCapture(0)
 
 def preprocess_input(frame, input_size):
-    # 프레임을 모델 입력 크기로 조정
-    frame_resized = cv2.resize(frame, input_size)
-    
-    # 이미지 데이터를 UINT8로 변환
-    input_data = np.uint8(frame_resized)
-    
-    return np.expand_dims(input_data, axis=0)
-
-
-def preprocess_input(frame, input_size):
     # 프레임을 모델 입력 크기로 조정하고 정규화
     frame_resized = cv2.resize(frame, input_size)
     frame_normalized = frame_resized / 255.0
