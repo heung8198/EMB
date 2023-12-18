@@ -39,8 +39,8 @@ class VideoStream:
         self.stopped = True
 
 # 모델 및 라벨 로드
-MODEL_PATH = 'kick_up.tflite'
-LABELS = ['HUP', 'stand', 'taekwondo']
+MODEL_PATH = 'stand_up.tflite'
+LABELS = ['HUP', 'stand']
 
 # TensorFlow Lite 인터프리터 초기화
 interpreter = Interpreter(model_path=MODEL_PATH)
@@ -58,7 +58,6 @@ input_width = input_shape[2]
 # 비디오 스트림 초기화 및 시작
 videostream = VideoStream(resolution=(640, 480), framerate=30).start()
 time.sleep(1)
-# ...
 
 # ...
 try:
@@ -68,21 +67,12 @@ try:
             print("카메라에서 프레임을 읽지 못했습니다.")
             continue  # 다음 프레임을 시도
 
-        # 이미지 전처리: 입력 이미지 크기를 모델의 크기에 맞게 조정
-        resized_frame = cv2.resize(frame, (180, 180))  # 180x180 크기로 조정
+        # 이미지 전처리
+        resized_frame = cv2.resize(frame, (180, 180))  # 모델에 맞게 크기 조정
         input_data = np.expand_dims(resized_frame, axis=0)
         input_data = (np.float32(input_data) - 127.5) / 127.5
 
         # 모델 추론 실행
-        interpreter.set_tensor(input_details[0]['index'], input_data)
-        interpreter.invoke()
-
-        # 결과 추출 및 표시
-        # ...
-
-# ...
-
-        # 모델 추론
         interpreter.set_tensor(input_details[0]['index'], input_data)
         interpreter.invoke()
 
@@ -93,6 +83,9 @@ try:
         # 결과 표시
         cv2.putText(frame, predicted_label, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow('Camera Input', frame)
+
+        # 인식된 라벨을 콘솔에 출력
+        print("Detected:", predicted_label)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
