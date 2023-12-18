@@ -68,14 +68,16 @@ try:
         ret, frame = cap.read()
         if not ret:
             break
-
-        # MoveNet 추론 실행
-        
+            
+       # MoveNet 추론 실행
         input_data = preprocess_input(frame, input_size)
         movenet_interpreter.set_tensor(movenet_interpreter.get_input_details()[0]['index'], input_data)
         movenet_interpreter.invoke()
-        landmarks = postprocess_output(movenet_interpreter.get_tensor(movenet_interpreter.get_output_details()[0]['index'])[0], output_stride)
 
+        # 랜드마크 추출 및 스켈레톤 그리기
+        landmarks = extract_movenet_landmarks(movenet_interpreter, output_stride)
+        draw_skeleton(frame, landmarks)
+        
         # 포즈 분류 모델 추론 실행
         pose_classifier_interpreter.set_tensor(pose_classifier_interpreter.get_input_details()[0]['index'], landmarks)
         pose_classifier_interpreter.invoke()
