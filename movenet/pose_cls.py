@@ -24,10 +24,8 @@ cap = cv2.VideoCapture(0)
 def preprocess_input(frame, input_size):
     # 프레임을 모델 입력 크기로 조정
     frame_resized = cv2.resize(frame, input_size)
-    
     # 이미지 데이터를 UINT8로 변환
     input_data = np.uint8(frame_resized)
-    
     return np.expand_dims(input_data, axis=0)
 
 
@@ -54,7 +52,7 @@ def draw_skeleton(frame, landmarks):
             cv2.line(frame, start_point, end_point, (0, 255, 0), 2)
 
 # MoveNet 모델 입력 크기 및 출력 스트라이드
-input_size = (192, 192)
+input_size = (256,256)
 output_stride = 32
 
 try:
