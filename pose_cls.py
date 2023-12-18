@@ -1,3 +1,25 @@
+import cv2
+import numpy as np
+from tflite_runtime.interpreter import Interpreter
+from threading import Thread
+
+# MoveNet 모델 경로
+MOVENET_MODEL_PATH = 'path/to/movenet_model.tflite'
+
+# 포즈 분류 모델 경로
+POSE_CLASSIFIER_MODEL_PATH = 'path/to/pose_classifier_model.tflite'
+
+# 클래스 라벨
+LABELS = ['handup', 'non_handup']
+
+# TensorFlow Lite 인터프리터 초기화
+movenet_interpreter = Interpreter(model_path=MOVENET_MODEL_PATH)
+movenet_interpreter.allocate_tensors()
+pose_classifier_interpreter = Interpreter(model_path=POSE_CLASSIFIER_MODEL_PATH)
+pose_classifier_interpreter.allocate_tensors()
+
+# 비디오 캡처 시작
+cap = cv2.VideoCapture(0)
 def preprocess_input(frame, input_size):
     # 프레임을 모델 입력 크기로 조정하고 정규화
     frame_resized = cv2.resize(frame, input_size)
