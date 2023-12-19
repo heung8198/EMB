@@ -67,6 +67,7 @@ int main() {
 	}
 	
     // 디바이스 파일 닫기
+    close_keyboard();
     close(fd);
     return 0;
 }
