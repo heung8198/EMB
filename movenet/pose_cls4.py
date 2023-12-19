@@ -29,6 +29,7 @@ def run(estimation_model, camera_id, width, height):
             class_name = "hand up"
             # 이하 추가 새로운 코드
             cap.release()
+            print(class_name)
             cv.destroyALLWindows()
             print(class_name)
             return class_name
