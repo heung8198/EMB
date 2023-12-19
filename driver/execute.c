@@ -1,13 +1,11 @@
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/fs.h>
-#include <linux/cdev.h>
-#include <linux/uaccess.h>
-#include <linux/gpio.h>
-#include <linux/kernel.h>
-#include <linux/delay.h>
-#include <linux/ktime.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include<fcntl.h>
+#include<termios.h>
 
+static struct termios init_setting, new_setting;
 
 void init_keyboard()
 {
