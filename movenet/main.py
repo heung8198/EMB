@@ -36,7 +36,7 @@ def run_python_script(script_path):
         print(f"Exception Occurred in Python Script: {e}")
 
 # button 프로그램을 실행하고, 그 출력을 분석
-button_stdout, button_stderr = run_c_program("../driver/button", [])
+button_stdout, button_stderr = run_c_program("./driver/button", [])
 
 # 디버깅: button 프로그램의 표준 출력과 에러 메시지 확인
 print("Debug - Standard Output:", button_stdout)
@@ -44,11 +44,11 @@ print("Debug - Error Message:", button_stderr)
 
 # 버튼 상태가 '1'일 때 pose_cls4.py 실행
 if button_stdout and "Button 1 (GPIO 16) state: 1" in button_stdout:
-    run_python_script("pose_cls4.py")
+    run_python_script("./movenet/pose_cls4.py")
 else:
     print("Button 1 was not pressed or no output was received.")
 
 # 나머지 프로그램을 순서대로 실행
-run_c_program("../driver/step_motor", [])  # step_motor 실행
-run_c_program("../driver/ultrasonic", [])  # ultrasonic 실행
-run_c_program("../driver/led", [])                 # led 실행
+run_c_program("./driver/step_motor", [])  # step_motor 실행
+run_c_program("./driver/ultrasonic", [])  # ultrasonic 실행
+run_c_program("./driver/led", [])                 # led 실행
