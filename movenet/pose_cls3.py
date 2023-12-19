@@ -29,14 +29,14 @@ def run(estimation_model, classification_model, label_file, camera_id, width, he
         
         # Calculation pose classification
         # 각 랜드마크의 좌표를 추출
-        left_shoulder_y = person.keypoints[5].y # 왼쪽 어깨 y 좌표
-        right_shoulder_y = person.keypoints[6].y # 오른쪽 어깨 y 좌표
-        left_wrist_y = person.keypoints[9].y # 왼쪽 손목 y 좌표
-        right_wrist_y = person.keypoints[10].y # 오른쪽 손목 y 좌표
+        left_shoulder_y = keypoints_with_scores[5][0] # 왼쪽 어깨 y 좌표
+        right_shoulder_y = keypoints_with_scores[6][0] # 오른쪽 어깨 y 좌표
+        left_wrist_y = keypoints_with_scores[9][0] # 왼쪽 손목 y 좌표
+        right_wrist_y = keypoints_with_scores[10][0] # 오른쪽 손목 y 좌표
 
         # 양손이 어깨보다 높은지 확인
         if left_wrist_y < left_shoulder_y and right_wrist_y < right_shoulder_y:
-            class_name = "손이 어깨보다 높음"
+            class_name = "Hands Up"
         else:
             prob_list = classifier.classify_pose(person)
             class_name = prob_list[0].label
