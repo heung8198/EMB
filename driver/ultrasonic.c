@@ -59,7 +59,7 @@ int main() {
 		break;
 	}
 		
-	if(key=='\n'){	
+	else{	
         printf("Distance: ");
         fflush(stdout); // 표준 출력 버퍼 비우기
         read(fd, &distance, sizeof(distance)); // 새로운 측정값 읽기
