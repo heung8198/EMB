@@ -61,9 +61,10 @@ int main(int argc, char** argv) {
 	char prev_buffer[2] = { 0 }; // 이전 버튼 상태를 저장할 배열 선언
 	int state1 = 0;//button up toggle state
 	int state2 = 0;//button down toggle state
+	printf("program start!\n");
 
 	while (1) {
-		printf("program start!\n");
+		
 		key = get_key();
 
 		if(key=='q'){
