@@ -38,7 +38,7 @@ def run(estimation_model, camera_id, width, height):
         cv2.imshow(estimation_model, image)
 
         # 'q' 키를 누르면 종료
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) == 81 or cv2.waitKey(1) == 113:
             break
 
     cap.release()
