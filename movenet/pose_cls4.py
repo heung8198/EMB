@@ -24,7 +24,8 @@ def run(estimation_model, camera_id, width, height):
         right_shoulder = person.keypoints[6].coordinate # 오른쪽 어깨 좌표
         left_wrist = person.keypoints[9].coordinate # 왼쪽 손목 좌표
         right_wrist = person.keypoints[10].coordinate # 오른쪽 손목 좌표
-
+        # Delay 추가, 3초
+        cv2.waitKey(3000)
         if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
             class_name = "hand up"
             # 이하 추가 새로운 코드
