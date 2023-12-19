@@ -17,7 +17,7 @@ import os
 from typing import Dict, List
 
 import cv2
-from data import BodyPart
+from data import BodyPart # 랜드마크 정의 (랜드마크 index) 
 from data import Person
 from data import person_from_keypoints_with_scores
 import numpy as np
