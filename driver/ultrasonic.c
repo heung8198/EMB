@@ -22,13 +22,8 @@ int main() {
 	while (1) {
         printf("Distance: ");
         fflush(stdout); // 표준 출력 버퍼 비우기
-
-        
-        
-        read(fd, distance, sizeof(distance)); // 새로운 측정값 읽기
+        read(fd, &distance, sizeof(distance)); // 새로운 측정값 읽기
         printf("%d cm\n", distance); // 읽은 데이터 출력
-        
-	
     }
 	
 
