@@ -8,7 +8,7 @@
 
 int main() {
     int fd;
-    char buffer[20];
+    int distance;
 
     // 디바이스 파일 열기
     fd = open(DEVICE_PATH, O_RDONLY);
@@ -19,20 +19,16 @@ int main() {
 
 
     // 사용자로부터 거리 측정 명령 받기
-    printf("Press Enter to measure distance, q to quit...\n");
 	while (1) {
         printf("Distance: ");
         fflush(stdout); // 표준 출력 버퍼 비우기
 
-        // Enter 키를 누르면 새로운 측정 수행
-        if (getchar() == '\n') {
-            memset(buffer, 0, sizeof(buffer)); // 버퍼 초기화
-            read(fd, buffer, sizeof(buffer)); // 새로운 측정값 읽기
-            printf("%s\n", buffer); // 읽은 데이터 출력
-        }
-		else if (getchar() == 'q') {
-            break; // 종료
-        }
+        
+        
+        read(fd, distance, sizeof(distance)); // 새로운 측정값 읽기
+        printf("%d cm\n", distance); // 읽은 데이터 출력
+        
+	
     }
 	
 
