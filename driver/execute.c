@@ -5,6 +5,8 @@
 #include<fcntl.h>
 #include<termios.h>
 
+static struct termios init_setting, new_setting;
+
 
 void init_keyboard()
 {
