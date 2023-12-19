@@ -28,19 +28,19 @@ def run(estimation_model, classification_model, label_file, camera_id, width, he
         cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         
         # Calculation pose classification
-        # 양손이 어깨보다 높은지 확인
-        
-        left_shoulder = person.keypoints[5][:2] # 왼쪽 어깨 좌표
-        right_shoulder = person.keypoints[6][:2] # 오른쪽 어깨 좌표
-        left_wrist = person.keypoints[9][:2] # 왼쪽 손목 좌표
-        right_wrist = person.keypoints[10][:2] # 오른쪽 손목 좌표
+        # 각 랜드마크의 좌표를 추출
+        left_shoulder_y = person.keypoints[5].y # 왼쪽 어깨 y 좌표
+        right_shoulder_y = person.keypoints[6].y # 오른쪽 어깨 y 좌표
+        left_wrist_y = person.keypoints[9].y # 왼쪽 손목 y 좌표
+        right_wrist_y = person.keypoints[10].y # 오른쪽 손목 y 좌표
 
-        if left_wrist < left_shoulder and right_wrist < right_shoulder:
-            class_name = "Hands Up"
+        # 양손이 어깨보다 높은지 확인
+        if left_wrist_y < left_shoulder_y and right_wrist_y < right_shoulder_y:
+            class_name = "손이 어깨보다 높음"
         else:
             prob_list = classifier.classify_pose(person)
             class_name = prob_list[0].label
-            cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         
         cv2.imshow(estimation_model, image)
         if cv2.waitKey(1) == 27:
