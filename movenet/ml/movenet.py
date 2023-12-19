@@ -321,8 +321,8 @@ class Movenet(object):
  #   for idx, (y, x) in enumerate(coordinates_only):
   #      print(f"Landmark {idx}: Y = {y}, X = {x}")
     # 좌표와 신뢰도 점수 출력
-    for idx, (y, x, score) in enumerate(keypoints_with_scores):
-      print(f"Landmark {idx}: Y = {y}, X = {x}, Score = {score}")
+    #for idx, (y, x, score) in enumerate(keypoints_with_scores):
+    #  print(f"Landmark {idx}: Y = {y}, X = {x}, Score = {score}")
 
         
     # Update the coordinates.
