@@ -78,8 +78,9 @@ int main(int argc, char** argv) {
 			
 			// 현재 버튼 상태를 이전 상태로 저장
 			prev_buffer[0] = buffer[0];
+		}
 			
-
+		else{
 			if (state1 == 1) {
 				printf("Distance: ");
 				fflush(stdout); // 표준 출력 버퍼 비우기
@@ -88,9 +89,9 @@ int main(int argc, char** argv) {
 				read(dev1, distance_buffer, sizeof(distance_buffer)); // 새로운 측정값 읽기
 				printf("%s\n", distance_buffer); // 읽은 데이터 출력
 			}
-			
-		
 		}
+		
+		
 		
 
 	
