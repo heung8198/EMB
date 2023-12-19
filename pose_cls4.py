@@ -27,9 +27,9 @@ def run(estimation_model, camera_id, width, height):
         right_wrist = person.keypoints[10].coordinate # 오른쪽 손목 좌표
 
         if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
-            class_name = "손을 들고 있음"
+            class_name = "hand up"
         else:
-            class_name = "손을 내리고 있음"
+            class_name = "non_handup"
 
         cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow(estimation_model, image)
