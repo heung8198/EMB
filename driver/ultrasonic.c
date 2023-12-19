@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include<fcntl.h>
-#include<termios.h>     // memset 함수를 위한 헤더
+#include <fcntl.h>
+#include <termios.h> 
 
 #define DEVICE_PATH "/dev/hcsr04" // 사용할 디바이스 파일 경로
 static struct termios init_setting, new_setting;
