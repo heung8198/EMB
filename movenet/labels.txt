@@ -1,2 +1,4 @@
 handup
-non_handup
+kick
+sit
+stand
