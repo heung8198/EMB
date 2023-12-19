@@ -310,6 +310,17 @@ class Movenet(object):
     keypoints_with_scores = self._interpreter.get_tensor(self._output_index)
     keypoints_with_scores = np.squeeze(keypoints_with_scores)
 
+    # Print coordinate
+    # keypoints_with_scores는 [17, 3] 형태의 배열
+    # 예시: keypoints_with_scores = model_output
+
+    # 랜드마크의 좌표만 추출
+    coordinates_only = keypoints_with_scores[:, :2]
+
+    # 추출된 좌표 출력
+    for idx, (y, x) in enumerate(coordinates_only):
+        print(f"Landmark {idx}: Y = {y}, X = {x}")
+
     # Update the coordinates.
     for idx in range(len(BodyPart)):
       keypoints_with_scores[idx, 0] = crop_region[
