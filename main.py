@@ -35,7 +35,7 @@ def run_python_script(script_path):
         print(f"Exception Occurred in Python Script: {e}")
 
 # button 프로그램을 실행하고, 그 출력을 분석
-button_stdout, button_stderr = run_c_program("./drive/button", ["arg1"])
+button_stdout, button_stderr = run_c_program("./drive/button","")
 
 # 버튼 상태가 '1'일 때 pose_cls4.py 실행
 if "Button 1 (GPIO 16) state: 1" in button_stdout:
