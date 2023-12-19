@@ -67,20 +67,22 @@ int main(int argc, char** argv) {
 	int state2 = 0;//button down toggle state
 
 	while (1) {
-
+		printf("program start!\n");
 		key = get_key();
 
-		if (key == '\n') {
-			printf("program start!\n");
+		if(key=='q'){
+			printf("exit this program.\n");
+            		break;
+		}
+		else{
+		
 			if (buffer[0] != prev_buffer[0]) { // 버튼 1이 눌렸는지 확인
 				state1 = !state1;
 			}
 			
 			// 현재 버튼 상태를 이전 상태로 저장
 			prev_buffer[0] = buffer[0];
-		}
-			
-		else{
+		
 			if (state1 == 1) {
 				printf("Distance: ");
 				fflush(stdout); // 표준 출력 버퍼 비우기
@@ -91,10 +93,6 @@ int main(int argc, char** argv) {
 			}
 		}
 		
-		
-		
-
-	
 	}
 
 	close_keyboard();
