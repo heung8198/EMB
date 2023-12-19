@@ -21,8 +21,7 @@ def run(estimation_model, classification_model, label_file, camera_id, width, he
         image = cv2.flip(image, 1)
         person = pose_detector.detect(image)
         image = utils.visualize(image, [person])
-
-        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
         # Run pose classification
         prob_list = classifier.classify_pose(person)
         class_name = prob_list[0].label
@@ -36,12 +35,12 @@ def run(estimation_model, classification_model, label_file, camera_id, width, he
         left_wrist = person.keypoints[9][:2] # 왼쪽 손목 좌표
         right_wrist = person.keypoints[10][:2] # 오른쪽 손목 좌표
 
-        if left_wrist[0] < left_shoulder[0] and right_wrist[0] < right_shoulder[0]:
+        if left_wrist < left_shoulder and right_wrist < right_shoulder:
             class_name = "Hands Up"
         else:
             prob_list = classifier.classify_pose(person)
             class_name = prob_list[0].label
-
+            cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         
         cv2.imshow(estimation_model, image)
         if cv2.waitKey(1) == 27:
