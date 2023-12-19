@@ -1,4 +1,4 @@
-obj-m += step_motor_driver.o u_sonic_driver.o button_driver.o
+obj-m += step_motor_driver.o u_sonic_driver.o button_driver.o led_driver.o
 KDIR = ~/working/Raspbian/kernel
 
 RESULT = step_motor
