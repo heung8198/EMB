@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 	char key;
 
 	int dev0 = open("/dev/my_button", O_RDONLY); // read only
-	int dev1 = open("/dev/hcrs04", O_RDONLY);
+	int dev1 = open("/dev/hcsr04", O_RDONLY);
 
 	if (dev0 < 0) {
 		printf("gpio_driver Opening was not possible!\n");
