@@ -65,7 +65,7 @@ static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, l
     int to_copy, not_copied;
     int distance = measure_distance(); // 거리 측정
 
-    to_copy = min(count, sizeof(buffer));
+    to_copy = min(count, sizeof(distance));
 
     not_copied = copy_to_user(user_buffer, &distance, to_copy);
 
