@@ -42,17 +42,17 @@ int main(int argc, char** argv) {
 	int dev2 = open("/dev/my_led", O_WRONLY);
 
 	if (dev0 < 0) {
-		printf("gpio_driver Opening was not possible!\n");
+		printf("button Opening was not possible!\n");
 		return -1;
 	}
 
 	if (dev1 < 0) {
-		printf("gpio_driver Opening was not possible!\n");
+		printf("hcsr04 Opening was not possible!\n");
 		return -1;
 	}
 
 	if (dev2 < 0) {
-		printf("gpio_driver Opening was not possible!\n");
+		printf("led Opening was not possible!\n");
 		return -1;
 	}
 
