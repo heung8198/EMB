@@ -39,7 +39,7 @@ __used __section("__versions") = {
 	{ 0xb43f9365, "ktime_get" },
 	{ 0x2e4c28f8, "gpiod_get_raw_value" },
 	{ 0xc358aaf8, "snprintf" },
-	{ 0x528c709d, "simple_read_from_buffer" },
+	{ 0x51a910c0, "arm_copy_to_user" },
 	{ 0x3ea1b6e4, "__stack_chk_fail" },
 	{ 0xe3ec2f2b, "alloc_chrdev_region" },
 	{ 0xa91f4045, "__class_create" },
@@ -60,4 +60,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "679899B3C2109CF027EB056");
+MODULE_INFO(srcversion, "835576BF236F198590006D0");
