@@ -19,7 +19,8 @@ def run_c_program(program_name, args):
 def run_python_script(script_path):
     try:
         # Python 스크립트를 실행하고 결과를 얻음
-        result = subprocess.run(["python", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        result = subprocess.run(["python3", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        return result.stdout, result.stderr
 
         # Python 스크립트의 표준 출력 출력
         print("Standard Output from Python Script:")
