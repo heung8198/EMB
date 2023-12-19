@@ -20,7 +20,7 @@ int main() {
         // 버튼 상태 읽기
         bytes_read = read(fd, &button_state, sizeof(button_state));
         if (bytes_read < 0) {
-            perror("Failed to read the device...");
+            printf("Failed to read the device...");
             break;
         } else if (bytes_read == 0) {
             // 데이터가 없으면 다시 시도
@@ -31,6 +31,11 @@ int main() {
         printf("Button 1 (GPIO 16) state: %c\n", button_state[0]);
         printf("Button 2 (GPIO 20) state: %c\n", button_state[1]);
 
+        // 버튼 1이 1인 상태면 루프 종료
+        if (button_state[0] == '1') {
+            break;
+        }
+
         // 간단한 딜레이를 두고 다시 읽기
         sleep(1);
     }
@@ -39,4 +44,3 @@ int main() {
     close(fd);
     return 0;
 }
-
