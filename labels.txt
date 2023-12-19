@@ -1,5 +1,0 @@
-handup
-kick
-one_handup
-sit
-stand
