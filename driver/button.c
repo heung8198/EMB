@@ -28,14 +28,11 @@ int main() {
         }
 
         // 버튼 상태 출력
-        printf("Button 1 (GPIO 16) state: %c\n", button_state[0]);
-        printf("Button 2 (GPIO 20) state: %c\n", button_state[1]);
-
-        // 버튼 1이나 버튼 2가 눌렸을 경우 루프 종료
         if (button_state[0] == '1' || button_state[1] == '1') {
+            printf("Button 1 (GPIO 16) state: %c\n", button_state[0]);
+            printf("Button 2 (GPIO 20) state: %c\n", button_state[1]);
             break;
-        }
-
+        
         // 딜레이 없이 지속적으로 확인
     }
 
