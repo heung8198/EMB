@@ -97,15 +97,15 @@ static int __init ModuleInit(void) {
 		goto AddError;
 	}
 
-	/*GPIo 20 init*/
+	/*GPIo 12 init*/
 	if (gpio_request(12, "rpi-gpio-12")) {
 		printk("Can not allocate GPIO 12\n");
 		goto AddError;
 	}
-	/*set Gpio 20 dircetion*/
+	/*set Gpio 12 dircetion*/
 	if (gpio_direction_output(12,0)) {
 		printk("Can not set GPIO 12 to output!\n");
-		goto Gpio20Error;
+		goto Gpio12Error;
 	}
 
 	return 0;
