@@ -1,0 +1,3 @@
+handup
+kick
+non_handup
