@@ -19,7 +19,7 @@ static struct cdev my_device;
 
 static ssize_t driver_write(struct file* File, const char* user_buffer, size_t count, loff_t* offs) {
 	int to_copy, not_copied, delta;
-	int value[2];
+	int value;
 
 
 	/* get amount of data to copy*/
@@ -31,25 +31,12 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
 
 	/*setting the led*/
 
-	switch (value[0]) {
+	switch (value) {
 	case 0:
 		gpio_set_value(20, 0);
 		break;
 	case 1:
 		gpio_set_value(20, 1);
-		break;
-	default:
-		printk("Invaild Input!\n");
-		break;
-
-	}
-
-	switch (value[1]) {
-	case 0:
-		gpio_set_value(12, 0);
-		break;
-	case 1:
-		gpio_set_value(12, 1);
 		break;
 	default:
 		printk("Invaild Input!\n");
@@ -110,18 +97,6 @@ static int __init ModuleInit(void) {
 		goto AddError;
 	}
 
-	/*GPIO 12 init*/
-	if (gpio_request(12, "rpi-gpio-12")) {
-		printk("Can not allocate GPIO 12\n");
-		goto AddError;
-	}
-
-	/*Set GPIO 12 direction*/
-	if (gpio_direction_output(12, 0)) {
-		printk("Can not set GPIO 12 to output!\n");
-		goto Gpio12Error;
-	}
-
 	/*GPIo 20 init*/
 	if (gpio_request(20, "rpi-gpio-20")) {
 		printk("Can not allocate GPIO 20\n");
@@ -129,13 +104,11 @@ static int __init ModuleInit(void) {
 	}
 	/*set Gpio 20 dircetion*/
 	if (gpio_direction_output(20,0)) {
-		printk("Can not set GPIO 20 to input!\n");
+		printk("Can not set GPIO 20 to output!\n");
 		goto Gpio20Error;
 	}
 
 	return 0;
-Gpio12Error:
-	gpio_free(12);
 Gpio20Error:
 	gpio_free(20);
 AddError:
@@ -148,9 +121,7 @@ ClassError:
 }
 
 static void __exit ModuleExit(void) {
-	gpio_set_value(12, 0);
 	gpio_set_value(20, 0);
-	gpio_free(12);
 	gpio_free(20);
 	cdev_del(&my_device);
 	device_destroy(my_class, my_device_nr);
