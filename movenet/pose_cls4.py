@@ -26,19 +26,34 @@ def run(estimation_model, camera_id, width, height):
         right_wrist = person.keypoints[10].coordinate # 오른쪽 손목 좌표
 
         if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
-            class_name = "hand up"  
-        elif left_wrist.y < left_shoulder.y:
-            class_name = "left_hand_up"
+            class_name = "hand up"
+            # 이하 추가 새로운 코드
+            cap.release()
+            cv.destroyALLWindows()
+            print(class_name)
+            return class_name
+            # 여기까지
         elif right_wrist.y < right_shoulder.y:
+            class_name = "left_hand_up"
+            cap.release()
+            cv.destroyALLWindows()
+            print(class_name)
+            return class_name
+        elif left_wrist.y < left_shoulder.y:
             class_name = "right_hand_up"
+            cap.release()
+            cv.destroyALLWindows()
+            print(class_name)
+            return class_name
         else:
             class_name = "non_handup"
+
             
         cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow(estimation_model, image)
 
         # 'q' 키를 누르면 종료
-        if cv2.waitKey(1) == 81 or cv2.waitKey(1) == 113:
+        if cv2.waitKey(1) & 0xFF == ord('q') or cv2.waitKey(1) & 0xFF == ord('Q'):
             break
 
     cap.release()
