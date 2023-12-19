@@ -1,8 +1,9 @@
-#include <stdio.h>      // printf, perror, getchar 등의 함수를 위한 헤더
-#include <stdlib.h>     // 일반 유틸리티 함수를 위한 헤더
-#include <fcntl.h>      // open 함수를 위한 헤더
-#include <unistd.h>     // read, close 함수와 관련 상수를 위한 헤더
-#include <string.h>     // memset 함수를 위한 헤더
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include<fcntl.h>
+#include<termios.h>     // memset 함수를 위한 헤더
 
 #define DEVICE_PATH "/dev/hcsr04" // 사용할 디바이스 파일 경로
 static struct termios init_setting, new_setting;
@@ -46,7 +47,7 @@ int main() {
     }
 
 	init_keyboard();
-	print("press q for quit\n");
+	printf("press q for quit\n");
 
 	
     // 사용자로부터 거리 측정 명령 받기
