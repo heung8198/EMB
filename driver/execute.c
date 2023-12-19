@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 
 	char buffer[2];
 	int distance;
-	int led[2];
+	int led;
 	ssize_t bytes_read;
 
 	init_keyboard();
@@ -93,11 +93,11 @@ int main(int argc, char** argv) {
 				printf("%d cm\n", distance); // 읽은 데이터 출력
 
 				if (distance < 10) {
-					led[0] = 1;
+					led= 1;
 					write(dev2, &led, sizeof(led));
 				}
 				else {
-					led[0] = 0;
+					led = 0;
 					write(dev2, &led, sizeof(led));
 				}
 			}
