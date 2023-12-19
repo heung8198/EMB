@@ -56,10 +56,6 @@ int main(int argc, char** argv) {
 	char distance_buffer[20];
 	ssize_t bytes_read;
 
-	//button state read
-	bytes_read = read(dev0, buffer, sizeof(buffer));
-	//button up state buffer[0], button down state buffer[1]
-
 	init_keyboard();
 
 	char prev_buffer[2] = { 0 }; // 이전 버튼 상태를 저장할 배열 선언
@@ -75,13 +71,11 @@ int main(int argc, char** argv) {
             		break;
 		}
 		else{
-		
-			if (buffer[0] != prev_buffer[0]) { // 버튼 1이 눌렸는지 확인
-				state1 = !state1;
-			}
-			
-			// 현재 버튼 상태를 이전 상태로 저장
-			prev_buffer[0] = buffer[0];
+			bytes_read = read(dev0, buffer, sizeof(buffer)); // 버튼 상태 읽기
+			if (buffer[0] != prev_buffer[0] && buffer[0] == '1') { // 버튼 1이 눌렸는지 확인
+            		state1 = !state1; // 측정 시작
+       			}
+			prev_buffer[0] = buffer[0]; // 현재 버튼 상태를 이전 상태로 저장
 		
 			if (state1 == 1) {
 				printf("Distance: ");
