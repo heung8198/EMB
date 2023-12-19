@@ -315,12 +315,16 @@ class Movenet(object):
     # 예시: keypoints_with_scores = model_output
 
     # 랜드마크의 좌표만 추출
-    coordinates_only = keypoints_with_scores[:, :2]
+#    coordinates_only = keypoints_with_scores[:, :2]
 
     # 추출된 좌표 출력
-    for idx, (y, x) in enumerate(coordinates_only):
-        print(f"Landmark {idx}: Y = {y}, X = {x}")
+ #   for idx, (y, x) in enumerate(coordinates_only):
+  #      print(f"Landmark {idx}: Y = {y}, X = {x}")
+    # 좌표와 신뢰도 점수 출력
+    for idx, (y, x, score) in enumerate(keypoints_with_scores):
+    print(f"Landmark {idx}: Y = {y}, X = {x}, Score = {score}")
 
+        
     # Update the coordinates.
     for idx in range(len(BodyPart)):
       keypoints_with_scores[idx, 0] = crop_region[
