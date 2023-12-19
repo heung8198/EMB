@@ -21,6 +21,13 @@ def run(estimation_model, classification_model, label_file, camera_id, width, he
         image = cv2.flip(image, 1)
         person = pose_detector.detect(image)
         image = utils.visualize(image, [person])
+
+        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        # Run pose classification
+        prob_list = classifier.classify_pose(person)
+        class_name = prob_list[0].label
+        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
         # Calculation pose classification
         # 양손이 어깨보다 높은지 확인
         
@@ -35,12 +42,7 @@ def run(estimation_model, classification_model, label_file, camera_id, width, he
             prob_list = classifier.classify_pose(person)
             class_name = prob_list[0].label
 
-        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        # Run pose classification
-        prob_list = classifier.classify_pose(person)
-        class_name = prob_list[0].label
-        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
+        
         cv2.imshow(estimation_model, image)
         if cv2.waitKey(1) == 27:
             break
