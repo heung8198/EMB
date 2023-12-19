@@ -30,7 +30,7 @@ char get_key()
 	char ch = -1;
 
 	if (read(STDIN_FILENO, &ch, 1) != 1)
-		ch = 1;
+		ch = -1;
 	return ch;
 }
 
