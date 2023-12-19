@@ -3,8 +3,8 @@ import subprocess
 # 실행 파일을 호출하는 함수를 정의
 def run_c_program(program_name, args):
     try:
-        # 서브프로세스를 실행하고 결과를 얻음
-        result = subprocess.run([program_name] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        # 서브프로세스를 실행하고 결과를 얻음 (sudo 권한으로 실행)
+        result = subprocess.run(["sudo", program_name] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
 
         # 표준 출력과 에러 메시지 반환
         return result.stdout, result.stderr
@@ -41,8 +41,7 @@ button_stdout, button_stderr = run_c_program("./drive/button", ["arg1"])
 if "Button 1 (GPIO 16) state: 1" in button_stdout:
     run_python_script("./movenet/pose_cls4.py")
 
-# 여기에 나머지 프로그램 실행 로직을 추가하세요.
-
-run_c_program("./step_motor", ["arg1", "arg2"])  # step_motor 실행
-run_c_program("./ultrasonic", ["arg1", "arg2"])  # ultrasonic 실행
-run_c_program("./led", ["arg1"])                 # led 실행
+# 나머지 프로그램을 순서대로 실행
+run_c_program("./drive/step_motor")  # step_motor 실행
+run_c_program("./drive/ultrasonic")  # ultrasonic 실행
+run_c_program("./drive/led")                 # led 실행
