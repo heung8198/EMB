@@ -19,7 +19,6 @@ def run_c_program(program_name, args):
     except Exception as e:
         print(f"Exception Occurred: {e}")
 
-
 # Python 스크립트를 호출하는 함수
 def run_python_script(script_name):
     try:
@@ -38,15 +37,10 @@ def run_python_script(script_name):
         print(f"Error Occurred in Python Script: {e}")
     except Exception as e:
         print(f"Exception Occurred in Python Script: {e}")
-		
-# 각 C 프로그램을 호출하는 예제
-run_c_program("./button", ["sudo", "arg2"])
-run_c_program("./led", ["arg1"])
-run_c_program("./ultrasonic", ["arg1", "arg2"])
-run_c_program("./step_motor", ["arg1", "arg2"])
 
-
-
-# Python 스크립트 호출
-run_python_script("pose_cls3.py")
-
+# 순서에 맞춰 프로그램 실행
+run_c_program("./button", ["sudo", "arg2"])  # button 실행
+run_python_script("pose_cls3.py")            # pose_cls3.py 실행
+run_c_program("./step_motor", ["arg1", "arg2"])  # step_motor 실행
+run_c_program("./ultrasonic", ["arg1", "arg2"])  # ultrasonic 실행
+run_c_program("./led", ["arg1"])                 # led 실행
