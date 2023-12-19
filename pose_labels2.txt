@@ -1,2 +1,0 @@
-handup
-non_handup
