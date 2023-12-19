@@ -2,7 +2,6 @@ import argparse
 import cv2
 from ml import Movenet
 import utils
-
 def run(estimation_model, camera_id, width, height):
     # Initialize the pose estimator
     pose_detector = Movenet(estimation_model)
@@ -34,11 +33,14 @@ def run(estimation_model, camera_id, width, height):
         cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow(estimation_model, image)
 
-        if cv2.waitKey(1) == 27:
+        # 'q' 키를 누르면 종료
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
+
+# main() 함수와 나머지 코드는 그대로 유지됩니다.
 
 def main():
     parser = argparse.ArgumentParser()
