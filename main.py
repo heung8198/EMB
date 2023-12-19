@@ -35,7 +35,7 @@ def run_python_script(script_path):
         print(f"Exception Occurred in Python Script: {e}")
 
 # button 프로그램을 실행하고, 그 출력을 분석
-button_stdout, button_stderr = run_c_program("./drive/button", [])
+button_stdout, button_stderr = run_c_program("./driver/button", [])
 
 # 디버깅: button 프로그램의 표준 출력과 에러 메시지 확인
 print("Debug - Standard Output:", button_stdout)
@@ -48,6 +48,6 @@ else:
     print("Button 1 was not pressed or no output was received.")
 
 # 나머지 프로그램을 순서대로 실행
-run_c_program("./drive/step_motor")  # step_motor 실행
-run_c_program("./drive/ultrasonic")  # ultrasonic 실행
-run_c_program("./drive/led")                 # led 실행
+run_c_program("./driver/step_motor", [])  # step_motor 실행
+run_c_program("./driver/ultrasonic", [])  # ultrasonic 실행
+run_c_program("./driver/led", [])                 # led 실행
