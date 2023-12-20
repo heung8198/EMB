@@ -101,7 +101,7 @@ static int __init ModuleInit(void) {
     }
 
     // 장치 클래스 생성
-    if ((my_class = class_create(THIS_MODULE, ULTRASONIC_DRIVER_CLASS)) == NULL) {
+    if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
         printk(KERN_ALERT "Could not create device class\n");
         unregister_chrdev_region(my_device_nr, 1);
         return -1;
