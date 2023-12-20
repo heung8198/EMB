@@ -67,7 +67,7 @@ int main() {
 	else{	
         printf("Distance: ");
         fflush(stdout); // 표준 출력 버퍼 비우기
-	usleep(100);
+	usleep(100000);
         read(fd, &distance, sizeof(distance)); // 새로운 측정값 읽기
         printf("%d cm\n", distance); // 읽은 데이터 출력
 
@@ -75,7 +75,8 @@ int main() {
                 led = 1;
                 write(dev, &led, sizeof(led));
                 is_led_on = 1; // LED가 켜졌음을 표시
-		sleep(1); 
+		sleep(1);
+		break; 
             } 	
     	}
  }
