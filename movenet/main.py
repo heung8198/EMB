@@ -4,7 +4,6 @@ import time
 def run_c_program(program_name, args):
     # 커널 모듈 경로 설정
     kernel_module = program_name + "_driver.ko"
-    subprocess.run(["sudo", "insmod", kernel_module])
 
     try:
         # 서브프로세스 실행
@@ -18,7 +17,7 @@ def run_c_program(program_name, args):
         return None, str(e)
     finally:
         # 커널 모듈 제거
-        subprocess.run(["sudo", "rmmod", kernel_module])
+        
 
 # 여기에 C 프로그램 실행 로직을 추가하세요.
 # 예: run_c_program("./driver/button", [])
@@ -49,6 +48,11 @@ def check_class_name(script_path, class_name):
     if class_name in stdout:
         return True
     return False
+#driver_path = ../driver/
+subprocess.run(["sudo", "insmod", ../driver/button_driver.ko])
+subprocess.run(["sudo", "insmod", ../driver/led_driver.ko])
+subprocess.run(["sudo", "insmod", ../driver/ultrasonic_driver.ko])
+subprocess.run(["sudo", "insmod", ../driver/step_motor_driver.ko])
 
 # button 프로그램을 실행하고, 그 출력을 분석
 button_stdout, button_stderr = run_c_program("../driver/button", [])
@@ -64,10 +68,14 @@ if button_stdout and "Button 1 (GPIO 16) state: 1" in button_stdout:
 else:
     print("Button 1 was not pressed or no output was received.")
 
-subproecss.run(["sudo", "insmod", "../driver/led_driver.ko"])
 run_c_program("../driver/ultrasonic",[])
 # 나머지 프로그램을 순서대로 실행
 
 button_stdout, button_stderr = run_c_program("../driver/button", [])
 if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
     subprocess.run(["sudo", "rmmod", "../driver/led_driver"])
+    subprocess.run(["sudo", "rmmod", ../driver/button_driver.ko])
+    subprocess.run(["sudo", "rmmod", ../driver/ultrasonic_driver.ko])
+    subprocess.run(["sudo", "rmmod", ../driver/step_motor_driver.ko])
+
+
