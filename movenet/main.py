@@ -1,14 +1,11 @@
 
 # 실행 파일을 호출하는 함수를 정의
 import subprocess
-
+import time
 def run_c_program(program_name, args):
     # 여기에 필요한 커널 모듈을 적재하는 코드를 추가하세요.
     kernel_module = program_name + "_driver.ko"
-    if program_name == "../driver/ultrasonic":
-        subprocess.run(["sudo","insmod","../driver/led_driver.ko"])
-    if not program_name == "../driver/led":
-	    subprocess.run(["sudo", "insmod", kernel_module])
+	subprocess.run(["sudo", "insmod", kernel_module])
 
     try:
         # 서브프로세스를 실행하고 결과를 얻음
@@ -22,8 +19,6 @@ def run_c_program(program_name, args):
         return None, str(e)
     finally:
         # 프로그램 실행이 끝나면 커널 모듈을 제거합니다.
-        if program_name == "../driver/ultrasonic":
-            subprocess.run(["sudo","rmmod","../driver/led_driver.ko"])
         
         subprocess.run(["sudo", "rmmod", kernel_module])
 
@@ -70,11 +65,13 @@ if button_stdout and "Button 1 (GPIO 16) state: 1" in button_stdout:
 
 else:
     print("Button 1 was not pressed or no output was received.")
+
+subproecss.run(["sudo", "insmod", "../driver/led_driver.ko"])
 run_c_program("../driver/ultrasonic",[])
 # 나머지 프로그램을 순서대로 실행
 
 button_stdout, button_stderr = run_c_program("../driver/button", [])
 if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
-    run_c_program("../driver/led", ["0"]) #led off
+    subproecss.run(["sudo", "rmmod", "../driver/led_driver"])
 	
 
