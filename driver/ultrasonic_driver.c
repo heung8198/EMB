@@ -23,7 +23,6 @@ static struct cdev my_device;
 #define ECHO_PIN 24 // 예시 에코 핀 번호
 
 // 초음파 센서 거리 측정 로직
-
 static int measure_distance(void) {
     ktime_t start_time, end_time;
     s64 time_diff;
@@ -83,6 +82,7 @@ static int driver_close(struct inode* inode, struct file* file) {
     printk(KERN_INFO "UltraSonicDriver: Device closed\n");
     return 0;
 }
+
 // 파일 작업 구조체 정의
 static struct file_operations fops = {
     .owner = THIS_MODULE,
@@ -164,10 +164,8 @@ static void __exit ModuleExit(void) {
 
     // 장치 번호 해제
     unregister_chrdev_region(my_device_nr, 1);
-
     printk(KERN_INFO "HC-SR04 Driver unloaded successfully\n");
 }
 
 module_init(ModuleInit);
 module_exit(ModuleExit);
-
