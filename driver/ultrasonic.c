@@ -39,6 +39,8 @@ int main() {
     int fd;
     int dev;
     int distance;
+    int led=0;
+    int led_is_on=0;
 
     // 디바이스 파일 열기
     fd = open(DEVICE_PATH, O_RDONLY);
@@ -69,12 +71,17 @@ int main() {
         read(fd, &distance, sizeof(distance)); // 새로운 측정값 읽기
         printf("%d cm\n", distance); // 읽은 데이터 출력
 
-	if(distance<10){
-		write(dev,)
-		
-	}	
-    		}
-	}
+	 if (distance < 10 && !is_led_on) {
+                led = 1;
+                write(dev, &led, sizeof(led));
+                is_led_on = 1; // LED가 켜졌음을 표시
+            } else if (distance >= 10 && is_led_on) {
+                led = 0;
+                write(dev, &led, sizeof(led));
+                is_led_on = 0; // LED가 꺼졌음을 표시
+            }	
+    	}
+ }
 	
     // 디바이스 파일 닫기
     close_keyboard();
