@@ -42,10 +42,10 @@ def check_class_name(script_path, class_name):
     return False
     
 #driver_path = ../driver/
-subprocess.run(["sudo", "insmod", ../driver/button_driver.ko])
-subprocess.run(["sudo", "insmod", ../driver/led_driver.ko])
-subprocess.run(["sudo", "insmod", ../driver/ultrasonic_driver.ko])
-subprocess.run(["sudo", "insmod", ../driver/step_motor_driver.ko])
+subprocess.run(["sudo", "insmod", "../driver/button_driver.ko"])
+subprocess.run(["sudo", "insmod", "../driver/led_driver.ko"])
+subprocess.run(["sudo", "insmod", "../driver/ultrasonic_driver.ko"])
+subprocess.run(["sudo", "insmod", "../driver/step_motor_driver.ko"])
 
 # button 프로그램을 실행하고, 그 출력을 분석
 button_stdout, button_stderr = run_c_program("../driver/button", [])
@@ -67,8 +67,8 @@ run_c_program("../driver/ultrasonic",[])
 button_stdout, button_stderr = run_c_program("../driver/button", [])
 if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
     subprocess.run(["sudo", "rmmod", "../driver/led_driver"])
-    subprocess.run(["sudo", "rmmod", ../driver/button_driver.ko])
-    subprocess.run(["sudo", "rmmod", ../driver/ultrasonic_driver.ko])
-    subprocess.run(["sudo", "rmmod", ../driver/step_motor_driver.ko])
+    subprocess.run(["sudo", "rmmod", "../driver/button_driver.ko"])
+    subprocess.run(["sudo", "rmmod", "../driver/ultrasonic_driver.ko"])
+    subprocess.run(["sudo", "rmmod", "../driver/step_motor_driver.ko"])
 
 
