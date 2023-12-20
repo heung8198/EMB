@@ -6,7 +6,7 @@ import subprocess
 def run_c_program(program_name, args):
     # 여기에 필요한 커널 모듈을 적재하는 코드를 추가하세요.
     kernel_module = program_name + "_driver.ko"
-    if program_name == "ultrasnoic":
+    if program_name == "ultrasonic":
         subprocess.run(["sudo","insmod","../driver/led_driver.ko"])
     if not program_name == "../driver/led":
 	subprocess.run(["sudo", "insmod", kernel_module])
