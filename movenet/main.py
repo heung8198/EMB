@@ -45,20 +45,30 @@ def run_python_script(script_path):
     except Exception as e:
         print(f"Exception Occurred in Python Script: {e}")
 
+#check pose_cls4.py
+def check_class_name(script_path, class_name):
+    stdout, _ = run_python_script(script_path)
+    if class_name in stdout:
+        return True
+    return False
+
 # button 프로그램을 실행하고, 그 출력을 분석
 button_stdout, button_stderr = run_c_program("../driver/button", [])
 
-# 디버깅: button 프로그램의 표준 출력과 에러 메시지 확인
-print("Debug - Standard Output:", button_stdout)
-print("Debug - Error Message:", button_stderr)
 
-# 버튼 상태가 '1'일 때 pose_cls4.py 실행
+# 버튼 상태가 '1'일 때 pose_cls4.py 실행 및 출력 확인
 if button_stdout and "Button 1 (GPIO 16) state: 1" in button_stdout:
-    run_python_script("pose_cls4.py")
+    if check_class_name("pose_cls4.py", "hand_up"):
+        run_c_program("../driver/step_motor", [])  # step_motor 실행
+    else:
+        print("hand up not detected step_motor not run")
+
+    if check_class_name("pose_cls4.py", "right_hand_up"):
+        run_c_program("../driver/ultrasonic", [])  # ultrasonic 실행
+    else:
+        print("Pose  not detected, ultrasonic not run.")
 else:
     print("Button 1 was not pressed or no output was received.")
 
 # 나머지 프로그램을 순서대로 실행
-run_c_program("../driver/step_motor", [])  # step_motor 실행
-run_c_program("../driver/ultrasonic", [])  # ultrasonic 실행
-run_c_program("../driver/led", ["1"])                 # led 실행
+run_c_program("../driver/led", ["1"])      # led 실행

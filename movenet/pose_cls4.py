@@ -34,7 +34,7 @@ def run(estimation_model, camera_id, width, height):
             if cnt_handup >= 10:
                 cap.release()
                 cv2.destroyAllWindows()
-                return "hand up"
+                return "hand_up"
         elif left_wrist.y < left_shoulder.y:
             cnt_left_hand_up += 1
             current_class = "left_hand_up"
