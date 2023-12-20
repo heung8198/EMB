@@ -19,7 +19,7 @@ static struct class* my_class;
 static struct cdev my_device;
 
 #define DRIVER_NAME "my_button"
-#define DRIVER_CLASS "MyModuleClass"
+#define DRIVER_CLASS "MyButtonClass"
 
 /*
  * @brief read data out of the buffer
