@@ -22,6 +22,9 @@ def run_c_program(program_name, args):
         return None, str(e)
     finally:
         # 프로그램 실행이 끝나면 커널 모듈을 제거합니다.
+        if program_name == "../driver/ultrasonic":
+            subprocess.run(["sudo","rmmod","../driver/led_driver.ko"])
+        
         subprocess.run(["sudo", "rmmod", kernel_module])
 
 # 여기에 C 프로그램 실행 로직을 추가하세요.
@@ -70,10 +73,8 @@ else:
 run_c_program("../driver/ultrasonic",[])
 # 나머지 프로그램을 순서대로 실행
 
-while True:
-	button_stdout, button_stderr = run_c_program("../driver/button", [])
-	if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
-		run_c_program("../driver/led", ["0"]) #led off
-		break #20 button on is break
+button_stdout, button_stderr = run_c_program("../driver/button", [])
+if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
+    run_c_program("../driver/led", ["0"]) #led off
 	
 
