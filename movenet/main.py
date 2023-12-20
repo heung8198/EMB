@@ -1,12 +1,16 @@
 import subprocess
 
 # 실행 파일을 호출하는 함수를 정의
-def run_c_program(program_name, args):
-    try:
-        # 서브프로세스를 실행하고 결과를 얻음 (sudo 권한으로 실행)
-        result = subprocess.run(["sudo", program_name] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+import subprocess
 
-        # 표준 출력과 에러 메시지 반환
+def run_c_program(program_name, args):
+    # 여기에 필요한 커널 모듈을 적재하는 코드를 추가하세요.
+    kernel_module = program_name + ".ko"
+    subprocess.run(["sudo", "insmod", kernel_module])
+
+    try:
+        # 서브프로세스를 실행하고 결과를 얻음
+        result = subprocess.run(["sudo", program_name] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         return result.stdout, result.stderr
     except subprocess.CalledProcessError as e:
         print(f"Error Occurred: {e}")
@@ -14,6 +18,12 @@ def run_c_program(program_name, args):
     except Exception as e:
         print(f"Exception Occurred: {e}")
         return None, str(e)
+    finally:
+        # 프로그램 실행이 끝나면 커널 모듈을 제거합니다.
+        subprocess.run(["sudo", "rmmod", kernel_module])
+
+# 여기에 C 프로그램 실행 로직을 추가하세요.
+# 예: run_c_program("./driver/button", [])
 
 # Python 스크립트를 호출하는 함수
 def run_python_script(script_path):
