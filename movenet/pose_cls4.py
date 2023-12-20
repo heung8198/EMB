@@ -25,28 +25,42 @@ def run(estimation_model, camera_id, width, height):
         left_wrist = person.keypoints[9].coordinate # 왼쪽 손목 좌표
         right_wrist = person.keypoints[10].coordinate # 오른쪽 손목 좌표
         # Delay 추가, 3초
-        cv2.waitKey(3000)
+            
+        class_name = "non_handup"
+        cnt_handup = 0
+        cnt_right_hand_up = 0
+        cnt_left_hand_up = 0
+        
+
         if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
             class_name = "hand up"
-            # 이하 추가 새로운 코드
-            cap.release()
-            print(class_name)
-            cv.destroyALLWindows()
-            print(class_name)
-            return class_name
+            cnt_handup += 1
+            if cnt_handup == 10:
+                cnt_handup = 0
+                # 이하 추가 새로운 코드
+                cap.release()
+                cv2.destroyALLWindows()
+                return class_name
+
             # 여기까지
         elif right_wrist.y < right_shoulder.y:
             class_name = "left_hand_up"
-            cap.release()
-            cv.destroyALLWindows()
-            print(class_name)
-            return class_name
+            cnt_left_hand_up += 1
+
+            if cnt_left_hand_up == 10:
+                cnt_left_hand_up = 0
+                cap.release()
+                cv2.destroyALLWindows()
+                return class_name
+                    
         elif left_wrist.y < left_shoulder.y:
+            cnt_right_hand_up += 1
             class_name = "right_hand_up"
-            cap.release()
-            cv.destroyALLWindows()
-            print(class_name)
-            return class_name
+            if cnt_right_hand_up == 10:
+                cnt_right_hand_up = 0
+                cap.release()
+                cv2.destroyALLWindows()
+                return class_name
         else:
             class_name = "non_handup"
 
@@ -71,7 +85,8 @@ def main():
     parser.add_argument('--frameHeight', default=480)
     args = parser.parse_args()
 
-    run(args.model, int(args.cameraId), int(args.frameWidth), int(args.frameHeight))
-
+    class_detect = run(args.model, int(args.cameraId), int(args.frameWidth), int(args.frameHeight))
+    return class_detect
 if __name__ == '__main__':
-    main()
+    result = main()
+    print(result)
