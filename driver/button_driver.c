@@ -8,7 +8,6 @@
 
 //Button gpio dirver gpio22 up , gpio27 down
 
-
 /* Meta Information */
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Joannes 4 GNU/Linux");
@@ -30,15 +29,12 @@ static ssize_t driver_read(struct file* File, char* user_buffer, size_t count, l
 	int to_copy, not_copied;
 	char button_state[2]; // 두 버튼의 상태를 저장하기 위해
 
-
-
 	// 복사할 바이트 수를 가져옵니다 (button_state의 크기를 초과할 수 없음)
 	to_copy = min(count, sizeof(button_state));
 
 	// 버튼의 값을 읽어서 문자로 변환
 	button_state[0] = gpio_get_value(16) + '0';
 	button_state[1] = gpio_get_value(20) + '0';
-
 
 	// 사용자 버퍼로 데이터를 복사합니다.
 	not_copied = copy_to_user(user_buffer, &button_state, to_copy);
@@ -92,6 +88,7 @@ static int __init ModuleInit(void) {
 		printk("Device class can not created!\n ");
 		goto ClassError;
 	}
+	
 	/*create device file*/
 	if (device_create(my_class, NULL, my_device_nr, NULL, DRIVER_NAME) == NULL) {
 		printk("Can not create device file!\n");
@@ -129,8 +126,8 @@ static int __init ModuleInit(void) {
 		printk("Can not set GPIO 20 to input!\n");
 		goto Gpio20Error;
 	}
-
 	return 0;
+	
 Gpio16Error:
 	gpio_free(16);
 Gpio20Error:
