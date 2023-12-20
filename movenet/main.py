@@ -6,6 +6,8 @@ import subprocess
 def run_c_program(program_name, args):
     # 여기에 필요한 커널 모듈을 적재하는 코드를 추가하세요.
     kernel_module = program_name + "_driver.ko"
+    if program_name == "ultrasnoic":
+        subprocess.run(["sudo","insmod","../driver/led_driver.ko"])
     subprocess.run(["sudo", "insmod", kernel_module])
 
     try:
@@ -20,6 +22,8 @@ def run_c_program(program_name, args):
         return None, str(e)
     finally:
         # 프로그램 실행이 끝나면 커널 모듈을 제거합니다.
+        if program_name == "ultrasonic":
+            subprocess.run(["sudo","rmmod","led_driver"])
         subprocess.run(["sudo", "rmmod", kernel_module])
 
 # 여기에 C 프로그램 실행 로직을 추가하세요.
@@ -59,16 +63,12 @@ button_stdout, button_stderr = run_c_program("../driver/button", [])
 # 버튼 상태가 '1'일 때 pose_cls4.py 실행 및 출력 확인
 if button_stdout and "Button 1 (GPIO 16) state: 1" in button_stdout:
     if check_class_name("pose_cls4.py", "hand_up"):
-        run_c_program("../driver/step_motor", [])  # step_motor 실행
+        run_c_program("../driver/step_motor", ["1"])  # step_motor 실행
     else:
         print("hand up not detected step_motor not run")
 
-    if check_class_name("pose_cls4.py", "right_hand_up"):
-        run_c_program("../driver/ultrasonic", [])  # ultrasonic 실행
-    else:
-        print("Pose  not detected, ultrasonic not run.")
 else:
     print("Button 1 was not pressed or no output was received.")
-
+run_c_program("../driver/ultrasonic",[])
 # 나머지 프로그램을 순서대로 실행
 run_c_program("../driver/led", ["1"])      # led 실행
