@@ -40,7 +40,7 @@ int main() {
     int dev;
     int distance;
     int led=0;
-    int led_is_on=0;
+    int is_led_on=0;
 
     // 디바이스 파일 열기
     fd = open(DEVICE_PATH, O_RDONLY);
