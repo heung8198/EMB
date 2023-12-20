@@ -71,9 +71,12 @@ if button_stdout and "Button 1 (GPIO 16) state: 1" in button_stdout:
 else:
     print("Button 1 was not pressed or no output was received.")
 
+print("ultrasonic run")
 run_c_program("../driver/ultrasonic",[])
 # 나머지 프로그램을 순서대로 실행
 
+
+print("put button 20 GPIO")
 button_stdout, button_stderr = run_c_program("../driver/button", [])
 if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
     subprocess.run(["sudo", "rmmod", "../driver/led_driver.ko"])
