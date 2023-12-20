@@ -13,7 +13,7 @@ MODULE_DESCRIPTION("A simple gpio driver for setting a LED");
 static dev_t my_device_nr;
 static struct class* my_class;
 static struct cdev my_device;
-#led pin is 25pin
+//led pin is 25pin
 #define DRIVER_NAME "my_led"
 #define DRIVER_CLASS "MyModuleClass"
 
