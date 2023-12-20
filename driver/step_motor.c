@@ -7,7 +7,7 @@
 #define FORWARD 1
 #define BACKWARD 2
 
-int main() {
+int main(int argc, char **argv) {
     int file_desc, ret;
     int mode;
 
@@ -18,9 +18,16 @@ int main() {
         return -1;
     }
 
-    // 사용자에게 모드 입력 받기
-    printf("Enter mode (1 for forward, 2 for backward): ");
-    scanf("%d", &mode);
+    // 인자가 충분한지 확인
+    if (argc != 2) {
+        printf("Usage: %s <mode>\n", argv[0]);
+        printf("mode: 1 for forward, 2 for backward\n");
+        close(file_desc);
+        return -1;
+    }
+
+    // 인자로부터 모드 추출
+    mode = atoi(argv[1]);
 
     if (mode != FORWARD && mode != BACKWARD) {
         printf("Invalid mode. Please enter 1 or 2.\n");
