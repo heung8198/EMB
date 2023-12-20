@@ -75,7 +75,6 @@ def run(estimation_model, camera_id, width, height):
     cv2.destroyAllWindows()
 
 # main() 함수와 나머지 코드는 그대로 유지됩니다.
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default='movenet_thunder')
@@ -84,8 +83,9 @@ def main():
     parser.add_argument('--frameHeight', default=480)
     args = parser.parse_args()
 
-    class_detect = run(args.model, int(args.cameraId), int(args.frameWidth), int(args.frameHeight))
-    return class_detect
+    class_detected = run(args.model, int(args.cameraId), int(args.frameWidth), int(args.frameHeight))
+    if class_detected:
+        print(class_detected)
+
 if __name__ == '__main__':
-    result = main()
-    print(result)
+    main()
