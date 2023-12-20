@@ -6,7 +6,6 @@
 #include <linux/gpio.h>
 #include <linux/delay.h> // msleep을 사용하기 위한 헤더 파일
 
-
 /* Meta Information */
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Your Name");
@@ -22,7 +21,6 @@ static struct cdev my_device;
 #define BACKWARD 2
 #define FORWARD 1
 #define STEPS_PER_REVOLUTION 1000 //180 
-
 
 static int step_sequence[] = {0b0001, 0b0010, 0b0100, 0b1000}; // Basic step sequence
 static int step_index = 0; // Current step index
@@ -41,7 +39,7 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
             for (int i = 0; i < 4; i++) {
                 gpio_set_value(gpio_pins[i], (step_sequence[step_index] & (1 << i)) != 0);
             }
-            // 추가적인 딜레이를 넣을 수 있음
+            		// 추가적인 딜레이를 넣을 수 있음
 			msleep(10); // 10ms 딜레이
         }
     } else if (mode == BACKWARD) {
@@ -50,17 +48,12 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
             for (int i = 0; i < 4; i++) {
                 gpio_set_value(gpio_pins[i], (step_sequence[step_index] & (1 << i)) != 0);
             }
-            // 추가적인 딜레이를 넣을 수 있음
+           		 // 추가적인 딜레이를 넣을 수 있음
 			msleep(10); // 10ms 딜레이
         }
     }
-
     delta = to_copy - not_copied;
-    return delta;
-
-
-
-	
+    return delta;	
 }
 
 //driver open
@@ -125,6 +118,7 @@ static int __init ModuleInit(void) {
             for (j1 = 0; j1 < i1; j1++) {
                 gpio_free(gpio_pins[j1]);
             }
+		
             cdev_del(&my_device);
             device_destroy(my_class, my_device_nr);
             class_destroy(my_class);
@@ -138,6 +132,7 @@ static int __init ModuleInit(void) {
             for (j1 = 0; j1 <= i1; j1++) {
                 gpio_free(gpio_pins[j1]);
             }
+		
             cdev_del(&my_device);
             device_destroy(my_class, my_device_nr);
             class_destroy(my_class);
@@ -145,7 +140,6 @@ static int __init ModuleInit(void) {
             return -1;
         }
     }
-
     return 0;
 }
 
@@ -167,4 +161,3 @@ static void __exit ModuleExit(void) {
 
 module_init(ModuleInit);
 module_exit(ModuleExit);
-
