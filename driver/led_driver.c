@@ -21,16 +21,13 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
 	int to_copy, not_copied, delta;
 	int value;
 
-
 	/* get amount of data to copy*/
 	to_copy = min(count, sizeof(value));
-
 
 	/*copy data to user*/
 	not_copied = copy_from_user(&value, user_buffer, to_copy);
 
 	/*setting the led*/
-
 	switch (value) {
 	case 0:
 		gpio_set_value(25, 0);
@@ -41,12 +38,9 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
 	default:
 		printk("Invaild Input!\n");
 		break;
-
 	}
-
 	delta = to_copy - not_copied;
 	return delta;
-
 }
 
 static int driver_open(struct inode* device_file, struct file* instance) {
@@ -69,7 +63,7 @@ static struct file_operations fops = {
 
 static int __init ModuleInit(void) {
 	printk("Hello, kernel!\n");
-
+	
 	/*Allocate a device nr*/
 	if (alloc_chrdev_region(&my_device_nr, 0, 1, DRIVER_NAME) < 0) {
 		printk("Device Nr. could not be allocated!\n");
@@ -82,6 +76,7 @@ static int __init ModuleInit(void) {
 		printk("Device class can not created!\n ");
 		goto ClassError;
 	}
+	
 	/*create device file*/
 	if (device_create(my_class, NULL, my_device_nr, NULL, DRIVER_NAME) == NULL) {
 		printk("Can not create device file!\n");
@@ -102,13 +97,14 @@ static int __init ModuleInit(void) {
 		printk("Can not allocate GPIO 25\n");
 		goto AddError;
 	}
+	
 	/*set Gpio 25 dircetion*/
 	if (gpio_direction_output(25,0)) {
 		printk("Can not set GPIO 25 to output!\n");
 		goto Gpio25Error;
 	}
-
 	return 0;
+	
 Gpio25Error:
 	gpio_free(25);
 AddError:
