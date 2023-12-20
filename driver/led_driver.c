@@ -13,7 +13,7 @@ MODULE_DESCRIPTION("A simple gpio driver for setting a LED");
 static dev_t my_device_nr;
 static struct class* my_class;
 static struct cdev my_device;
-
+#led pin is 25pin
 #define DRIVER_NAME "my_led"
 #define DRIVER_CLASS "MyModuleClass"
 
@@ -33,10 +33,10 @@ static ssize_t driver_write(struct file* File, const char* user_buffer, size_t c
 
 	switch (value) {
 	case 0:
-		gpio_set_value(12, 0);
+		gpio_set_value(25, 0);
 		break;
 	case 1:
-		gpio_set_value(12, 1);
+		gpio_set_value(25, 1);
 		break;
 	default:
 		printk("Invaild Input!\n");
@@ -97,20 +97,20 @@ static int __init ModuleInit(void) {
 		goto AddError;
 	}
 
-	/*GPIo 12 init*/
-	if (gpio_request(12, "rpi-gpio-12")) {
-		printk("Can not allocate GPIO 12\n");
+	/*GPIo 25 init*/
+	if (gpio_request(25, "rpi-gpio-25")) {
+		printk("Can not allocate GPIO 25\n");
 		goto AddError;
 	}
-	/*set Gpio 12 dircetion*/
-	if (gpio_direction_output(12,0)) {
-		printk("Can not set GPIO 12 to output!\n");
-		goto Gpio12Error;
+	/*set Gpio 25 dircetion*/
+	if (gpio_direction_output(25,0)) {
+		printk("Can not set GPIO 25 to output!\n");
+		goto Gpio25Error;
 	}
 
 	return 0;
-Gpio12Error:
-	gpio_free(12);
+Gpio25Error:
+	gpio_free(25);
 AddError:
 	device_destroy(my_class, my_device_nr);
 FileError:
@@ -121,8 +121,8 @@ ClassError:
 }
 
 static void __exit ModuleExit(void) {
-	gpio_set_value(12, 0);
-	gpio_free(12);
+	gpio_set_value(25, 0);
+	gpio_free(25);
 	cdev_del(&my_device);
 	device_destroy(my_class, my_device_nr);
 	class_destroy(my_class);
