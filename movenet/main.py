@@ -5,6 +5,11 @@ def run_c_program(program_name, args):
     try:
         # 서브프로세스 실행
         result = subprocess.run(["sudo", program_name] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        print("Standard Output:")
+        print(result.stdout)
+        print("Standard Error:")
+        print(result.stderr)
+        
         return result.stdout, result.stderr
     except subprocess.CalledProcessError as e:
         print(f"Error Occurred: {e}")
@@ -19,6 +24,11 @@ def run_python_script(script_path):
     try:
         # Python 스크립트를 실행하고 결과를 얻음
         result = subprocess.run(["python3", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        print("Standard Output:")
+        print(result.stdout)
+        print("Standard Error:")
+        print(result.stderr)
+        
         return result.stdout, result.stderr
 
         # Python 스크립트의 표준 출력 출력
