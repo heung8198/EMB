@@ -2,9 +2,6 @@
 import subprocess
 import time
 def run_c_program(program_name, args):
-    # 커널 모듈 경로 설정
-    kernel_module = program_name + "_driver.ko"
-
     try:
         # 서브프로세스 실행
         result = subprocess.run(["sudo", program_name] + args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
@@ -15,12 +12,7 @@ def run_c_program(program_name, args):
     except Exception as e:
         print(f"Exception Occurred: {e}")
         return None, str(e)
-    finally:
-        # 커널 모듈 제거
         
-
-# 여기에 C 프로그램 실행 로직을 추가하세요.
-# 예: run_c_program("./driver/button", [])
 
 # Python 스크립트를 호출하는 함수
 def run_python_script(script_path):
@@ -48,6 +40,7 @@ def check_class_name(script_path, class_name):
     if class_name in stdout:
         return True
     return False
+    
 #driver_path = ../driver/
 subprocess.run(["sudo", "insmod", ../driver/button_driver.ko])
 subprocess.run(["sudo", "insmod", ../driver/led_driver.ko])
