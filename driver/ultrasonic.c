@@ -37,10 +37,13 @@ char get_key()
 int main() {
     char key;
     int fd;
+    int dev;
     int distance;
 
     // 디바이스 파일 열기
     fd = open(DEVICE_PATH, O_RDONLY);
+    dev = open("/dev/my_led",O_WRONLY);
+	
     if (fd == -1) {
         perror("Failed to open the device file");
         return 1;
@@ -65,6 +68,11 @@ int main() {
 	usleep(100);
         read(fd, &distance, sizeof(distance)); // 새로운 측정값 읽기
         printf("%d cm\n", distance); // 읽은 데이터 출력
+
+	if(distance<10){
+		write(dev,)
+		
+	}	
     		}
 	}
 	
