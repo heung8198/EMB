@@ -15,7 +15,7 @@ static struct class* my_class;
 static struct cdev my_device;
 //led pin is 25pin
 #define DRIVER_NAME "my_led"
-#define DRIVER_CLASS "MyModuleClass"
+#define DRIVER_CLASS "ledModuleClass"
 
 static ssize_t driver_write(struct file* File, const char* user_buffer, size_t count, loff_t* offs) {
 	int to_copy, not_copied, delta;
