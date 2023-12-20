@@ -50,6 +50,7 @@ def run(estimation_model, camera_id, width, height):
                 cv2.destroyAllWindows()
                 return "right_hand_up"
         else:
+            current_class = "no_hand_up"
             cnt_handup = 0
             cnt_right_hand_up = 0
             cnt_left_hand_up = 0
