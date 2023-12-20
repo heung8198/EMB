@@ -28,10 +28,13 @@ int main() {
         }
 
         // 버튼 상태 출력
-        if (button_state[0] == '1' || button_state[1] == '1') {
+        if (button_state[0] == '1') {
             printf("Button 1 (GPIO 16) state: %c\n", button_state[0]);
+	}
+	if(button_state[1] == '1'){
             printf("Button 2 (GPIO 20) state: %c\n", button_state[1]);
             break;
+	}
 			}
         
         // 딜레이 없이 지속적으로 확인
