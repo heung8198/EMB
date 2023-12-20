@@ -9,7 +9,7 @@ def run_c_program(program_name, args):
     if program_name == "ultrasnoic":
         subprocess.run(["sudo","insmod","../driver/led_driver.ko"])
     if not program_name == "../driver/led":
-		subprocess.run(["sudo", "insmod", kernel_module])
+	subprocess.run(["sudo", "insmod", kernel_module])
 
     try:
         # 서브프로세스를 실행하고 결과를 얻음
