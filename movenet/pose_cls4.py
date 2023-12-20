@@ -33,41 +33,35 @@ def run(estimation_model, camera_id, width, height):
         
 
         if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
-            class_name = "hand up"
             cnt_handup += 1
-            if cnt_handup == 10:
-                cnt_handup = 0
-                # 이하 추가 새로운 코드
+            current_class_name = "hand up"
+            if cnt_handup >= 10:
                 cap.release()
-                cv2.destroyALLWindows()
-                return class_name
-
-            # 여기까지
-        elif right_wrist.y < right_shoulder.y:
-            class_name = "left_hand_up"
-            cnt_left_hand_up += 1
-
-            if cnt_left_hand_up == 10:
-                cnt_left_hand_up = 0
-                cap.release()
-                cv2.destroyALLWindows()
-                return class_name
-                    
+                cv2.destroyAllWindows()
+                return current_class_name
         elif left_wrist.y < left_shoulder.y:
-            cnt_right_hand_up += 1
-            class_name = "right_hand_up"
-            if cnt_right_hand_up == 10:
-                cnt_right_hand_up = 0
+            cnt_left_hand_up += 1
+            current_class_name = "left_hand_up"
+            if cnt_left_hand_up >= 10:
                 cap.release()
-                cv2.destroyALLWindows()
-                return class_name
+                cv2.destroyAllWindows()
+                return current_class_name
+        elif right_wrist.y < right_shoulder.y:
+            cnt_right_hand_up += 1
+            current_class_name = "right_hand_up"
+            if cnt_right_hand_up >= 10:
+                cap.release()
+                cv2.destroyAllWindows()
+                return current_class_name
         else:
-            class_name = "non_handup"
+            current_class_name = "non_handup"
+            cnt_handup = 0
+            cnt_right_hand_up = 0
+            cnt_left_hand_up = 0
 
-            
-        cv2.putText(image, class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(image, current_class_name, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.imshow(estimation_model, image)
-
+        
         # 'q' 키를 누르면 종료
         if cv2.waitKey(1) & 0xFF == ord('q') or cv2.waitKey(1) & 0xFF == ord('Q'):
             break
