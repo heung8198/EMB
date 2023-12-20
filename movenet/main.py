@@ -79,6 +79,7 @@ run_c_program("../driver/ultrasonic",[])
 print("put button 20 GPIO")
 button_stdout, button_stderr = run_c_program("../driver/button", [])
 if button_stdout and "Button 2 (GPIO 20) state: 1" in button_stdout:
+    run_c_program("../driver/step_motor", ["2"])  # step_motor 역방향 실행
     subprocess.run(["sudo", "rmmod", "../driver/led_driver.ko"])
     subprocess.run(["sudo", "rmmod", "../driver/button_driver.ko"])
     subprocess.run(["sudo", "rmmod", "../driver/ultrasonic_driver.ko"])
