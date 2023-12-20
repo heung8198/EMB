@@ -8,7 +8,7 @@ def run_c_program(program_name, args):
     kernel_module = program_name + "_driver.ko"
     if program_name == "ultrasnoic":
         subprocess.run(["sudo","insmod","../driver/led_driver.ko"])
-    if program_name != "../driver/led")
+    if not program_name == "../driver/led":
 		subprocess.run(["sudo", "insmod", kernel_module])
 
     try:
