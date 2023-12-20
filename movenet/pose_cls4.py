@@ -22,10 +22,10 @@ def run(estimation_model, camera_id, width, height):
         person = pose_detector.detect(image)
         image = utils.visualize(image, [person])
 
-        left_shoulder = person.keypoints[5].coordinate
-        right_shoulder = person.keypoints[6].coordinate
-        left_wrist = person.keypoints[9].coordinate
-        right_wrist = person.keypoints[10].coordinate
+        right_shoulder = person.keypoints[5].coordinate
+        left_shoulder = person.keypoints[6].coordinate
+        right_wrist = person.keypoints[9].coordinate
+        left_wrist = person.keypoints[10].coordinate
         current_class = "non"
         
         if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
