@@ -75,11 +75,8 @@ int main() {
                 led = 1;
                 write(dev, &led, sizeof(led));
                 is_led_on = 1; // LED가 켜졌음을 표시
-            } else if (distance >= 10 && is_led_on) {
-                led = 0;
-                write(dev, &led, sizeof(led));
-                is_led_on = 0; // LED가 꺼졌음을 표시
-            }	
+		sleep(1); 
+            } 	
     	}
  }
 	
